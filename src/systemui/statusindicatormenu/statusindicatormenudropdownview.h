@@ -26,6 +26,8 @@
 #include <mscenewindowview.h>
 #include "statusindicatormenustyle.h"
 
+#define CRASH_FILE "/tmp/system-ui-crashed"
+
 class QGraphicsSceneMouseEvent;
 class QGraphicsLinearLayout;
 class MPannableViewport;
@@ -145,14 +147,19 @@ private:
     //! The controller
     StatusIndicatorMenu *controller;
 
-    //! The application extension area for the settings plugins
-    MApplicationExtensionArea *settingsPluginsExtensionArea;
+    //! The application extension area for the fixed area plugins
+    MApplicationExtensionArea *fixedPluginsExtensionArea;
 
     //! The application extension area for the status indicator widgets
     MApplicationExtensionArea *statusIndicatorExtensionArea;
 
-    //! Extension area for call ui and transfer ui plugins
+    //! Extension area for pannable area plugins
     MApplicationExtensionArea* createVerticalExtensionArea();
+
+    /*!
+     * Sets whether or not non-official plugins will be loaded
+     */
+    void setSafeMode(MApplicationExtensionArea *extensionArea, bool enabled);
 
     //! The pannable area viewport
     MPannableViewport *pannableViewport;

@@ -31,6 +31,9 @@
 #include <MViewCreator>
 #include <QGraphicsAnchorLayout>
 #include <QTimer>
+#include <QFile>
+#include <QTextStream>
+#include <MGConfItem>
 #include "statusindicatormenu.h"
 #include "statusindicatormenudropdownview.h"
 #include "statusindicatormenustyle.h"
@@ -85,7 +88,7 @@ void PannedWidgetController::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 StatusIndicatorMenuDropDownView::StatusIndicatorMenuDropDownView(StatusIndicatorMenu *controller) :
     MSceneWindowView(controller),
     controller(controller),
-    settingsPluginsExtensionArea(NULL),
+    fixedPluginsExtensionArea(NULL),
     statusIndicatorExtensionArea(NULL),
     pannableViewport(NULL),
     closeButtonOverlay(NULL),
@@ -115,30 +118,53 @@ StatusIndicatorMenuDropDownView::~StatusIndicatorMenuDropDownView()
 
 QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
 {
-    // Create an extension area for the top row plugins
-    settingsPluginsExtensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
-    connect(settingsPluginsExtensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), controller, SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
-    settingsPluginsExtensionArea->setObjectName("StatusIndicatorMenuTopRowExtensionArea");
-    settingsPluginsExtensionArea->setInProcessFilter(QRegExp("/statusindicatormenu-(volume|alarms|internetconnection|presence|profile).desktop$"));
-    settingsPluginsExtensionArea->setOutOfProcessFilter(QRegExp("$^"));
-    settingsPluginsExtensionArea->setOrder((QStringList()  << "statusindicatormenu-volume.desktop" << "statusindicatormenu-alarms.desktop" << "statusindicatormenu-internetconnection.desktop" << "statusindicatormenu-presence.desktop" << "statusindicatormenu-profile.desktop"));
+    // Create an extension area for the fixed area plugins
+    fixedPluginsExtensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
+    connect(fixedPluginsExtensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), controller, SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
+    fixedPluginsExtensionArea->setObjectName("StatusIndicatorMenuExtensionArea");
 
-    // Create a button for accessing the full settings
-    //% "Settings"
-    MButton *settingsButton = new MButton(qtTrId("qtn_stat_menu_settings"));
-    settingsButton->setObjectName("StatusIndicatorMenuTopRowExtensionButton");
-    settingsButton->setViewType(MButton::iconType);
-    settingsButton->setIconID("icon-m-status-menu-settings");
-    connect(settingsButton, SIGNAL(clicked()), controller, SLOT(launchControlPanelAndHide()));
+    QStringList order;
+    QRegExp filter;
+
+    QFile file("/home/user/.status-menu/top-order.conf");
+    if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        order = QString(file.readAll()).split("\n");
+        file.close();
+
+        QStringList pattern;
+        foreach (QString string, order)
+            if (string.length() > 0
+             && string.contains("statusindicatormenu-")
+             && !string.contains("safemode"))
+                pattern.append(string.remove("statusindicatormenu-").remove(".desktop"));
+
+        filter.setPattern(QString("/statusindicatormenu-(%1).desktop$").arg(pattern.join("|")));
+        pattern.clear();
+    }
+    else if (QFile(CRASH_FILE).exists())
+    {
+        filter.setPattern("/statusindicatormenu-(volume|safemode|call).desktop$");
+        order << "statusindicatormenu-volume.desktop"
+              << "statusindicatormenu-safemode.desktop"
+              << "statusindicatormenu-call.desktop";
+    }
+    else
+    {
+        filter.setPattern("/statusindicatormenu-(volume|call).desktop$");
+        order << "statusindicatormenu-volume.desktop"
+              << "statusindicatormenu-call.desktop";
+    }
+
+    fixedPluginsExtensionArea->setInProcessFilter(filter);
+    fixedPluginsExtensionArea->setOutOfProcessFilter(QRegExp("$^"));
+    fixedPluginsExtensionArea->setOrder(order);
 
     // Put the extension area and the settings button to a horizontal layout
-    QGraphicsLinearLayout *topRowLayout = new QGraphicsLinearLayout(Qt::Horizontal);
+    QGraphicsLinearLayout *topRowLayout = new QGraphicsLinearLayout(Qt::Vertical);
     topRowLayout->setContentsMargins(0, 0, 0, 0);
     topRowLayout->setSpacing(0);
-    topRowLayout->addStretch();
-    topRowLayout->addItem(settingsPluginsExtensionArea);
-    topRowLayout->addItem(settingsButton);
-    topRowLayout->addStretch();
+    topRowLayout->addItem(fixedPluginsExtensionArea);
 
     // Create a container widget for extension area and settings button layout
     MWidgetController *topRowWidget = new MStylableWidget;
@@ -150,14 +176,51 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
 
 MApplicationExtensionArea* StatusIndicatorMenuDropDownView::createVerticalExtensionArea()
 {
-    // Create an extension area for the call ui and transfer ui plugins
+    // Create an extension area for the pannable area plugins
     MApplicationExtensionArea *extensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
     extensionArea->setObjectName("StatusIndicatorMenuVerticalExtensionArea");
-    extensionArea->setInProcessFilter(QRegExp("/statusindicatormenu-(call|transfer).desktop$"));
+
+    QStringList order;
+    QRegExp filter;
+
+    QFile file("/home/user/.status-menu/pannable-order.conf");
+    if (!QFile(CRASH_FILE).exists() && file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        order = QString(file.readAll()).split("\n");
+        file.close();
+
+        QStringList pattern;
+        foreach (QString string, order)
+            if (string.length() > 0
+             && string.contains("statusindicatormenu-")
+             && !string.contains("safemode"))
+                pattern.append(string.remove("statusindicatormenu-").remove(".desktop"));
+
+        filter.setPattern(QString("/statusindicatormenu-(%1).desktop$").arg(pattern.join("|")));
+        pattern.clear();
+    }
+    else
+    {
+        filter.setPattern("/statusindicatormenu-(internetconnection|bluetooth|dlna|presence|transfer).desktop$");
+        order << "statusindicatormenu-internetconnection.desktop"
+              << "statusindicatormenu-bluetooth.desktop"
+              << "statusindicatormenu-dlna.desktop"
+              << "statusindicatormenu-presence.desktop"
+              << "statusindicatormenu-transfer.desktop";
+    }
+
+    extensionArea->setInProcessFilter(filter);
     extensionArea->setOutOfProcessFilter(QRegExp("$^"));
-    extensionArea->setOrder((QStringList() << "statusindicatormenu-call.desktop" << "statusindicatormenu-transfer.desktop"));
-    connect(extensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), controller, SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
+    extensionArea->setOrder(order);
+    connect(extensionArea,
+        SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)),
+        controller,
+        SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
     return extensionArea;
+}
+
+void StatusIndicatorMenuDropDownView::setSafeMode(MApplicationExtensionArea *extensionArea, bool enabled)
+{
 }
 
 MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
@@ -170,7 +233,9 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
     contentLayout->setSpacing(0);
     contentLayout->addItem(statusIndicatorExtensionArea);
 
-    if(style()->notificationArea()) {
+    MGConfItem *displayNotifications = new MGConfItem("/desktop/meego/status_menu/display_notifications", this);
+
+    if(style()->notificationArea() && displayNotifications->value(true).toBool()) {
         NotificationArea *notificationArea = new NotificationArea;
         notificationArea->setNotificationManagerInterface(Sysuid::instance()->notificationManagerInterface());
         connect(notificationArea, SIGNAL(bannerClicked()), controller, SIGNAL(hideRequested()));
@@ -178,27 +243,29 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
     }
 
     MWidgetController *contentWidget = new MStylableWidget;
-    contentWidget->setStyleName("StatusIndicatorMenuContentWidget");
+    contentWidget->setStyleName("StatusIndicatorMenuExtensionAreaWidget");
     contentWidget->setLayout(contentLayout);
 
     QGraphicsLinearLayout *pannableLayout = new QGraphicsLinearLayout(Qt::Vertical);
     pannableLayout->setContentsMargins(0, 0, 0, 0);
     pannableLayout->setSpacing(0);
     pannableLayout->addItem(contentWidget);
-    QGraphicsWidget *closeButtonRow = createCloseButtonRow();
-    pannableLayout->addItem(closeButtonRow);
+    //QGraphicsWidget *closeButtonRow = createCloseButtonRow();
+    //pannableLayout->addItem(closeButtonRow);
     pannableLayout->addStretch();
 
     // Create a container widget for the pannable area
     PannedWidgetController *pannedWidget = new PannedWidgetController;
     pannedWidget->setLayout(pannableLayout);
-    pannedWidget->setBottommostWidget(closeButtonRow);
+    //pannedWidget->setBottommostWidget(closeButtonRow);
+    pannedWidget->setBottommostWidget(contentWidget);
     connect(pannedWidget, SIGNAL(positionOrSizeChanged()), this, SLOT(setPannabilityAndLayout()));
     connect(pannedWidget, SIGNAL(pressedOutSideContents()), controller, SIGNAL(hideRequested()));
 
     // Setup the pannable viewport
     MPannableViewport *pannableViewport = new MPannableViewport;
     pannableViewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    pannableViewport->setVerticalPanningPolicy(MPannableWidget::PanningAsNeeded);
     pannableViewport->setWidget(pannedWidget);
     return pannableViewport;
 }
@@ -209,7 +276,7 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createCloseButtonRow()
     MButton *closeButton = new MButton;
     closeButton->setViewType("icon");
     closeButton->setObjectName("StatusIndicatorMenuCloseButton");
-    closeButton->setIconID("icon-m-framework-close");
+    closeButton->setIconID("icon-m-framework-close-thumbnail");
     connect(closeButton, SIGNAL(clicked()), controller, SIGNAL(hideRequested()));
 
     // Add two overlay widgets that will not allow mouse events to pass through them next to the close button
@@ -234,7 +301,7 @@ MOverlay *StatusIndicatorMenuDropDownView::createCloseButtonOverlay()
     MButton *closeButton = new MButton;
     closeButton->setViewType("icon");
     closeButton->setObjectName("StatusIndicatorMenuCloseButton");
-    closeButton->setIconID("icon-m-framework-close");
+    closeButton->setIconID("icon-m-framework-close-thumbnail");
     connect(closeButton, SIGNAL(clicked()), controller, SIGNAL(hideRequested()));
 
     // Add two overlay widgets that will not allow mouse events to pass through them next to the close button
@@ -255,7 +322,7 @@ MOverlay *StatusIndicatorMenuDropDownView::createCloseButtonOverlay()
 
 void StatusIndicatorMenuDropDownView::ensureIsViewable()
 {
-    settingsPluginsExtensionArea->init();
+    fixedPluginsExtensionArea->init();
 
     if (statusIndicatorExtensionArea) {
         statusIndicatorExtensionArea->init();
@@ -264,16 +331,9 @@ void StatusIndicatorMenuDropDownView::ensureIsViewable()
 
 void StatusIndicatorMenuDropDownView::setPannabilityAndLayout()
 {
-    QGraphicsWidget *pannableWidget = pannableViewport->widget();
-
-    // Enable pannability if there is too much content to fit on the screen
-    bool viewportShouldBePannable = pannableWidget->effectiveSizeHint(Qt::PreferredSize).height() > pannableViewport->geometry().height();
-    pannableViewport->setVerticalPanningPolicy(viewportShouldBePannable ? MPannableWidget::PanningAsNeeded : MPannableWidget::PanningAlwaysOff);
-
     // Appear or disappear the close button overlay based on close area position
-    const QGraphicsWidget *closeButtonRow = static_cast<PannedWidgetController *>(pannableViewport->widget())->bottommostWidget();
-    qreal closeButtonRowBottomYPos = closeButtonRow->mapToItem(controller, QPointF(0, closeButtonRow->geometry().height())).y();
-
+    const QGraphicsWidget *m_bottommostWidget = static_cast<PannedWidgetController *>(pannableViewport->widget())->bottommostWidget();
+    qreal closeButtonRowBottomYPos = m_bottommostWidget->mapToItem(controller, QPointF(0, m_bottommostWidget->geometry().height())).y();
     if (controller->sceneManager()) {
         qreal screenHeight = controller->sceneManager()->visibleSceneSize().height();
         if (closeButtonRowBottomYPos <= screenHeight) {
@@ -295,7 +355,7 @@ void StatusIndicatorMenuDropDownView::setPannabilityAndLayout()
 
 void StatusIndicatorMenuDropDownView::resetViewport()
 {
-    pannableViewport->setPosition(QPointF(0,0));
+    //pannableViewport->setPosition(QPointF(0,0));
 }
 
 void StatusIndicatorMenuDropDownView::applyStyle()

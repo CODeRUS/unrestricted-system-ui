@@ -1,5 +1,5 @@
 StatusIndicatorMenuStyle {
-    padding-top: 2.8mm;
+    padding-top: 0.0mm;
 
     notification-area: true;
 }
@@ -33,21 +33,24 @@ StatusIndicatorMenu MWidgetSlideAnimationStyle#Out {
 }
 
 MWidgetStyle#StatusIndicatorMenuExtensionAreaWidget {
-    background-image: "meegotouch-applicationpage-background";
+    background-image: "meegotouch-applicationpage-background-inverted";
 }
 
 MWidgetStyle#StatusIndicatorMenuContentWidget {
-    background-image: "meegotouch-applicationpage-background";
+    background-image: "meegotouch-applicationpage-background-inverted";
 }
 
 MWidgetStyle#CloseButtonArea {
-   background-image: "meegotouch-statusmenuclose-background";
+    background-image: "meegotouch-applicationpage-background-inverted";
+    minimum-size: 100% 10.0mm;
+    preferred-size: 100% 10.0mm;
+    maximum-size: 100% 10.0mm;
 }
 
 MWidgetStyle#StatusIndicatorMenuWindowBackground {
-    background-image: "meegotouch-applicationpage-background";
-    minimum-size: 100% 0;
-    maximum-size: 100% 0;
+    background-image: "meegotouch-applicationpage-background-inverted";
+    minimum-size: 480 0;
+    maximum-size: 480 0;
 }
 
 MStatusBarStyle#StatusIndicatorMenuWindowStatusBar {
@@ -91,19 +94,13 @@ MButtonStyle#StatusIndicatorMenuCloseButton {
 }
 
 MOverlayStyle#CloseButtonOverlay {
-    background-image: "meegotouch-statusmenuclose-background" 0px 0px 0px 0px;
-    minimum-size: 100% 6mm;
-    preferred-size: 100% 6mm;
-    maximum-size: 100% 6mm;
+    background-image: "meegotouch-applicationpage-background-inverted";
+    minimum-size: 100% 6.4mm;
+    preferred-size: 100% 6.4mm;
+    maximum-size: 100% 6.4mm;
     offset: 0 0;
     vertical-align: bottom;
     horizontal-align: left;
-}
-
-MApplicationExtensionAreaStyle#StatusIndicatorMenuTopRowExtensionArea {
-    background-image: ;
-    layout-orientation: horizontal;
-    container-mode: false;
 }
 
 MPannableWidgetStyle#StatusIndicatorMenuViewport {
@@ -118,11 +115,98 @@ MPannableWidgetStyle#StatusIndicatorMenuViewport {
     minimum-size: -1 -1;
     preferred-size: -1 -1;
     maximum-size: -1 -1;
-    background-image: "meegotouch-applicationpage-background";
+    background-image: "meegotouch-applicationpage-background-inverted";
 }
 
 MContainerStyle#MExtensionAreaInvisibleContainer {
     background-image: ;
 }
 
+MWidgetStyle#StatusBarLandscapeWidget {
+    padding-left: 0.4mm;
+    padding-right: 0.4mm;
+    padding-top: 0.4mm;
+}
 
+MWidgetStyle#StatusBarPortraitWidget {
+    padding-left: 0.4mm;
+    padding-right: 0.4mm;
+    padding-top: 0.4mm;
+}
+
+MWidgetStyle#StatusBarLandscapeWidgetCall {
+    background-image: "meegotouch-statusarea-background-call";
+    padding-left: 0.4mm;
+    padding-right: 0.4mm;
+    padding-top: 0.4mm;
+}
+
+MWidgetStyle#StatusBarPortraitWidgetCall {
+    background-image: "meegotouch-statusarea-background-call";
+    padding-left: 0.4mm;
+    padding-right: 0.4mm;
+    padding-top: 0.4mm;
+}
+
+StatusIndicatorMenu MWidgetSlideAnimationStyle#In.Landscape {
+    origin: "left";
+}
+
+StatusIndicatorMenu MWidgetSlideAnimationStyle#Out.Landscape {
+    origin: "left";
+}
+
+#MenuSceneLayerEffect {
+    background-image: "meegotouch-statusmenu-dimmer";
+}
+
+MSceneManagerStyle {
+    application-menu-animation: "MWidgetSlideAnimation";
+}
+
+ScreenLockWindowStyle {
+    locked-orientation: "portrait";
+    translucent: true;
+}
+
+MApplicationExtensionAreaStyle#StatusIndicatorMenuTopRowExtensionArea {
+    padding-left: 0mm;
+    padding-right: 0mm;
+    background-image: ;
+    layout-orientation: vertical;
+    container-mode: false;
+    background-color: $COLOR_INVERTED_BACKGROUND;
+}
+
+MApplicationExtensionAreaStyle#StatusIndicatorMenuVerticalExtensionArea {
+    padding-left: 0mm;
+    padding-right: 0mm;
+    background-image: ;
+    layout-orientation: vertical;
+    container-mode: false;
+    background-color: $COLOR_INVERTED_BACKGROUND;
+}
+
+MApplicationExtensionAreaStyle#StatusIndicatorMenuExtensionArea {
+    padding-left: 0mm;
+    padding-right: 0mm;
+    background-image: ;
+    layout-orientation: vertical;
+    container-mode: false;
+    background-color: $COLOR_INVERTED_BACKGROUND;
+}
+
+MWidgetZoomAnimationStyle#In {
+    opacity-animation-delay: 0;
+    opacity-animation-duration: 500;
+    opacity-animation-easing-curve: overshotbezier;
+
+    scale-animation-duration: 500;
+    scale-animation-easing-curve: overshotbezier;
+
+    delay: 50;
+    scale: 0.25;
+    opacity: 1;
+ 
+    position-animation-distance-factor: 0;
+}
