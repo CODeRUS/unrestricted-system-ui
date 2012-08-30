@@ -154,7 +154,7 @@ QString StatusIndicatorMenuVerticalView::pluginNameString()
 
 QStringList StatusIndicatorMenuVerticalView::getOrderList()
 {
-    QFile configFile("/etc/status-menu-items-order.conf");
+    QFile configFile("/home/user/.status-menu/items-order.conf");
     if (!configFile.exists()) {
         QStringList list;
         list << "statusindicatormenu-volume.desktop"
