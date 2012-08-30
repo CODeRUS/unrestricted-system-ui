@@ -1,5 +1,7 @@
 #!/bin/sh
 
+chown -R user:users /home/user/.status-menu/
+
 if [ -n "`initctl status xsession/sysuid | grep running`" ]
 then
   initctl restart xsession/sysuid
