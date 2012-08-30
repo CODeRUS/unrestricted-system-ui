@@ -298,6 +298,9 @@ BatteryStatusIndicator::BatteryStatusIndicator(ApplicationContext &context, QGra
     batterySaveMode = createContextItem(context, "System.PowerSaveMode");
     connect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()));
 
+    displayPercentage = new MGConfItem("/desktop/meego/status_area/display_percentage", this);
+    connect(displayPercentage, SIGNAL(valueChanged()), this, SLOT(batteryPercentageChanged()));
+
     // Set the initial power save mode (in case it has been switched on before reboot, etc)
     if (batterySaveMode->value().toBool()) {
         setStyleName(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE);
@@ -343,24 +346,49 @@ void BatteryStatusIndicator::batteryLevelChanged()
 
 void BatteryStatusIndicator::batteryChargingChanged()
 {
-    if (batteryCharging->value().toBool()) {
-        if (batterySaveMode->value().toBool()) {
-            setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE_AND_CHARGING);
+    bool displayPercentageEnabled = displayPercentage->value(false).toBool();
+    if (displayPercentageEnabled)
+        setStyleNameAndUpdate(QString(metaObject()->className()) +"Disabled");
+    else
+    {
+        if (batteryCharging->value().toBool()) {
+            if (batterySaveMode->value().toBool()) {
+                setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE_AND_CHARGING);
+            } else {
+                setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_CHARGING);
+            }
+            animateIfPossible = true;
         } else {
-            setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_CHARGING);
+            if (batterySaveMode->value().toBool()) {
+                setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE);
+            } else {
+                setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_NORMAL);
+            }
+            animateIfPossible = false;
         }
-        animateIfPossible = true;
-    } else {
-        if (batterySaveMode->value().toBool()) {
-            setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE);
-        } else {
-            setStyleNameAndUpdate(QString(metaObject()->className()) + BATTERY_MODE_NORMAL);
-        }
-        animateIfPossible = false;
-    }
 
     updateAnimationStatus();
     batteryLevelChanged ();
+    }
+}
+
+void BatteryStatusIndicator::batteryPercentageChanged()
+{
+    bool displayPercentageEnabled = displayPercentage->value(false).toBool();
+    if (displayPercentageEnabled)
+    {
+        setStyleNameAndUpdate(QString(metaObject()->className())+"Disabled");
+        disconnect(batteryLevel, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+        disconnect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()));
+        disconnect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()));
+    }
+    else
+    {
+        batteryChargingChanged();
+        connect(batteryLevel, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
+        connect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()), Qt::UniqueConnection);
+        connect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()), Qt::UniqueConnection);
+    }
 }
 
 BatteryPercentageStatusIndicator::BatteryPercentageStatusIndicator(ApplicationContext &context, QGraphicsItem *parent) :
@@ -369,7 +397,13 @@ BatteryPercentageStatusIndicator::BatteryPercentageStatusIndicator(ApplicationCo
     setStyleNameAndUpdate(metaObject()->className());
 
     batteryPercentage = createContextItem(context, "Battery.ChargePercentage");
-    connect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryPercentageChanged()));
+    connect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+
+    batteryCharging = createContextItem(context, "Battery.IsCharging");
+    connect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+
+    batterySaveMode = createContextItem(context, "System.PowerSaveMode");
+    connect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
     
     displayPercentage = new MGConfItem("/desktop/meego/status_area/display_percentage", this);
     connect(displayPercentage, SIGNAL(valueChanged()), this, SLOT(batteryPercentageChanged()));
@@ -379,21 +413,36 @@ BatteryPercentageStatusIndicator::~BatteryPercentageStatusIndicator()
 {
 }
 
-void BatteryPercentageStatusIndicator::batteryPercentageChanged()
+void BatteryPercentageStatusIndicator::batteryLevelChanged()
 {
-    bool displayPercentageEnabled = displayPercentage->value(false).toBool();
-    if (displayPercentageEnabled) {
-        setStyleNameAndUpdate(QString(metaObject()->className()));
-        connect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryPercentageChanged()), Qt::UniqueConnection);
-    } else {
-        setStyleNameAndUpdate(QString(metaObject()->className())+"Disabled");
-        disconnect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryPercentageChanged()));
-    }
-
-    QString percentage = batteryPercentage->value().toString();
+    QString percentage;
+    if (batteryCharging->value().toBool())
+        percentage.append("+");
+    else if (batterySaveMode->value().toBool())
+        percentage.append("*");
+    percentage.append(batteryPercentage->value().toString());
     percentage.append("%");
 
     setValue(percentage);
+}
+
+void BatteryPercentageStatusIndicator::batteryPercentageChanged()
+{
+    bool displayPercentageEnabled = displayPercentage->value(false).toBool();
+    if (displayPercentageEnabled)
+    {
+        setStyleNameAndUpdate(QString(metaObject()->className()));
+        connect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
+        connect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
+        connect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
+    }
+    else
+    {
+        setStyleNameAndUpdate(QString(metaObject()->className())+"Disabled");
+        disconnect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+        disconnect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+        disconnect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()));
+    }
 }
 
 AlarmStatusIndicator::AlarmStatusIndicator(ApplicationContext &context, QGraphicsItem *parent) :

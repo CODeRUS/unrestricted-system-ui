@@ -35,6 +35,7 @@ public:
     virtual void BatteryStatusIndicatorDestructor();
     virtual void batteryLevelChanged();
     virtual void batteryChargingChanged();
+    virtual void batteryPercentageChanged();
 };
 
 // 2. IMPLEMENT STUB
@@ -58,6 +59,10 @@ void BatteryStatusIndicatorStub::batteryChargingChanged()
     stubMethodEntered("batteryChargingChanged");
 }
 
+void BatteryStatusIndicatorStub::batteryPercentageChanged()
+{
+    stubMethodEntered("batteryPercentageChanged");
+}
 // 3. CREATE A STUB INSTANCE
 BatteryStatusIndicatorStub gDefaultBatteryStatusIndicatorStub;
 BatteryStatusIndicatorStub *gBatteryStatusIndicatorStub = &gDefaultBatteryStatusIndicatorStub;
@@ -82,6 +87,11 @@ void BatteryStatusIndicator::batteryLevelChanged()
 void BatteryStatusIndicator::batteryChargingChanged()
 {
     gBatteryStatusIndicatorStub->batteryChargingChanged();
+}
+
+void BatteryStatusIndicator::batteryPercentageChanged()
+{
+    gBatteryStatusIndicatorStub->batteryPercentageChanged();
 }
 
 #endif // BATTERYSTATUSINDICATOR_STUB

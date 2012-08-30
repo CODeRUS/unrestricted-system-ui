@@ -243,11 +243,13 @@ public:
 private slots:
     void batteryLevelChanged();
     void batteryChargingChanged();
+    void batteryPercentageChanged();
 
 private:
     ContextItem *batteryLevel;
     ContextItem *batteryCharging;
     ContextItem *batterySaveMode;
+    MGConfItem *displayPercentage;
 
 #ifdef UNIT_TEST
     friend class Ut_StatusIndicator;
@@ -274,10 +276,13 @@ public:
     virtual ~BatteryPercentageStatusIndicator();
 
 private slots:
+    void batteryLevelChanged();
     void batteryPercentageChanged();
 
 private:
     ContextItem *batteryPercentage;
+    ContextItem *batteryCharging;
+    ContextItem *batterySaveMode;
     MGConfItem *displayPercentage;
 };
 

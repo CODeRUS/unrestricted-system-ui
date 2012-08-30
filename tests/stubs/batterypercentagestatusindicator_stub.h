@@ -34,6 +34,7 @@ public:
     virtual void BatteryPercentageStatusIndicatorConstructor(ApplicationContext &context, QGraphicsItem *parent);
     virtual void BatteryPercentageStatusIndicatorDestructor();
     virtual void batteryPercentageChanged();
+    virtual void batteryLevelChanged();
 };
 
 // 2. IMPLEMENT STUB
@@ -47,9 +48,15 @@ void BatteryPercentageStatusIndicatorStub::BatteryPercentageStatusIndicatorDestr
 {
 
 }
+
 void BatteryPercentageStatusIndicatorStub::batteryPercentageChanged()
 {
     stubMethodEntered("batteryPercentageChanged");
+}
+
+void BatteryPercentageStatusIndicatorStub::batteryLevelChanged()
+{
+    stubMethodEntered("batteryLevelChanged");
 }
 
 // 3. CREATE A STUB INSTANCE
@@ -71,6 +78,11 @@ BatteryPercentageStatusIndicator::~BatteryPercentageStatusIndicator()
 void BatteryPercentageStatusIndicator::batteryPercentageChanged()
 {
     gBatteryPercentageStatusIndicatorStub->batteryPercentageChanged();
+}
+
+void BatteryPercentageStatusIndicator::batteryLevelChanged()
+{
+    gBatteryPercentageStatusIndicatorStub->batteryLevelChanged();
 }
 
 #endif // BATTERYPERCENTAGESTATUSINDICATOR_STUB
