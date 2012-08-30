@@ -6,6 +6,8 @@
     <credential name="mce::LEDControl" />
     <credential name="mce::DeviceModeControl" />
     <credential name="dsme::DeviceStateControl" />
+    <credential name="GRP::video" />
+    <credential name="GRP::pulse-access"/>
     <credential match="xserver-security-policy::capture-drawables" />
     <credential match="xserver-security-policy::record-input" />
     <for path="/usr/bin/sysuid" />
