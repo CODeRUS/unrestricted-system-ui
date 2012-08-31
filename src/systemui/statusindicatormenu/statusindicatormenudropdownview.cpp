@@ -235,7 +235,7 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
 
     MGConfItem *displayNotifications = new MGConfItem("/desktop/meego/status_menu/display_notifications", this);
 
-    if(style()->notificationArea() && displayNotifications->value(true).toBool()) {
+    if(displayNotifications->value(true).toBool()) {
         NotificationArea *notificationArea = new NotificationArea;
         notificationArea->setNotificationManagerInterface(Sysuid::instance()->notificationManagerInterface());
         connect(notificationArea, SIGNAL(bannerClicked()), controller, SIGNAL(hideRequested()));
@@ -349,8 +349,8 @@ void StatusIndicatorMenuDropDownView::setPannabilityAndLayout()
     if (backgroundHeight < 0) {
         backgroundHeight = 0;
     }
-    backgroundWidget->setMinimumHeight(backgroundHeight);
-    backgroundWidget->setMaximumHeight(backgroundHeight);
+    backgroundWidget->setMinimumHeight(closeButtonRowBottomYPos - viewPortYPos);
+    backgroundWidget->setMaximumHeight(closeButtonRowBottomYPos - viewPortYPos);
 }
 
 void StatusIndicatorMenuDropDownView::resetViewport()
