@@ -2,6 +2,10 @@
 
 chown -R user:users /home/user/.status-menu/
 
+sed -i -e "s/minimum-size: 100% -1;/minimum-size: 100% 0;/" /usr/share/themes/blanco/meegotouch/sysuid/style/sysuid.css
+sed -i -e "s/preferred-size: 100% -1;/preferred-size: 100% 30%;/" /usr/share/themes/blanco/meegotouch/sysuid/style/sysuid.css
+sed -i -e "s/maximum-size: 100% -1;/maximum-size: 100% 100%;/" /usr/share/themes/blanco/meegotouch/sysuid/style/sysuid.css
+
 if [ -n "`initctl status xsession/sysuid | grep running`" ]
 then
   initctl restart xsession/sysuid
