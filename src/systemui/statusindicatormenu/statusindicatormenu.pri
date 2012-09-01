@@ -21,13 +21,15 @@ HEADERS += \
     statusindicatormenu/notificationareaview.h \
     statusindicatormenu/notificationareastyle.h \
     statusindicatormenu/statusindicatormenustyle.h \
+    statusindicatormenu/statusindicatordropdownmenustyle.h \
     statusindicatormenu/statusindicatormenu.h \
     statusindicatormenu/statusindicatormenudropdownview.h \
     statusindicatormenu/statusindicatormenuverticalview.h
 
 MODEL_HEADERS += statusindicatormenu/notificationareamodel.h
 STYLE_HEADERS += statusindicatormenu/notificationareastyle.h \
-                 statusindicatormenu/statusindicatormenustyle.h
+		 statusindicatormenu/statusindicatormenustyle.h \
+		 statusindicatormenu/statusindicatordropdownmenustyle.h
 
 headers.path = /usr/include/system-ui
 headers.files += statusindicatormenu/mstatusindicatormenuextensioninterface.h statusindicatormenu/MStatusIndicatorMenuExtensionInterface \

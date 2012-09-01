@@ -24,7 +24,7 @@
 #include <MStylableWidget>
 #include <MOverlay>
 #include <mscenewindowview.h>
-#include "statusindicatormenustyle.h"
+#include "statusindicatordropdownmenustyle.h"
 
 #define CRASH_FILE "/tmp/system-ui-crashed"
 
@@ -109,7 +109,7 @@ private:
 class StatusIndicatorMenuDropDownView : public MSceneWindowView
 {
     Q_OBJECT
-    M_VIEW(MSceneWindowModel, StatusIndicatorMenuStyle)
+    M_VIEW(MSceneWindowModel, StatusIndicatorDropDownMenuStyle)
 
 public:
     /*!

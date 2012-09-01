@@ -32,7 +32,7 @@
 #include "notificationarea_stub.h"
 #include "sysuid_stub.h"
 #include "x11wrapper_modified_stub.h"
-#include "statusindicatormenustyle.h"
+#include "statusindicatordropdownmenustyle.h"
 #include <MSceneManager>
 
 #ifdef HAVE_QMSYSTEM
@@ -110,22 +110,22 @@ MSceneManager *MWidget::sceneManager() const
 
 bool showNotificationArea = true;
 
-StatusIndicatorMenuStyleContainer::StatusIndicatorMenuStyleContainer() :
+StatusIndicatorDropDownMenuStyleContainer::StatusIndicatorDropDownMenuStyleContainer() :
   d_ptr(NULL)
 {
 }
 
 
-const char* StatusIndicatorMenuStyleContainer::styleType() const
+const char* StatusIndicatorDropDownMenuStyleContainer::styleType() const
 {
     return "MWidgetStyle";
 }
 
-StatusIndicatorMenuStyleContainer::~StatusIndicatorMenuStyleContainer()
+StatusIndicatorDropDownMenuStyleContainer::~StatusIndicatorDropDownMenuStyleContainer()
 {
 }
 
-const bool& StatusIndicatorMenuStyle::notificationArea() const
+const bool& StatusIndicatorDropDownMenuStyle::notificationArea() const
 {
     return showNotificationArea;
 }

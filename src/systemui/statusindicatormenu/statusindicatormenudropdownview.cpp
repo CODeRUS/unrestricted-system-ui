@@ -36,7 +36,7 @@
 #include <MGConfItem>
 #include "statusindicatormenu.h"
 #include "statusindicatormenudropdownview.h"
-#include "statusindicatormenustyle.h"
+#include "statusindicatordropdownmenustyle.h"
 #include "sysuid.h"
 
 const int StatusIndicatorMenuDropDownView::VIEW_INITIALIZATION_DELAY = 30 * 1000;
@@ -121,7 +121,7 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
     // Create an extension area for the fixed area plugins
     fixedPluginsExtensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
     connect(fixedPluginsExtensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), controller, SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
-    fixedPluginsExtensionArea->setObjectName("StatusIndicatorMenuExtensionArea");
+    fixedPluginsExtensionArea->setObjectName("StatusIndicatorDropDownMenuExtensionArea");
 
     QStringList order;
     QRegExp filter;
@@ -168,7 +168,7 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
 
     // Create a container widget for extension area and settings button layout
     MWidgetController *topRowWidget = new MStylableWidget;
-    topRowWidget->setStyleName("StatusIndicatorMenuExtensionAreaWidget");
+    topRowWidget->setStyleName("StatusIndicatorDropDownMenuExtensionAreaWidget");
     topRowWidget->setLayout(topRowLayout);
 
     return topRowWidget;
@@ -178,7 +178,7 @@ MApplicationExtensionArea* StatusIndicatorMenuDropDownView::createVerticalExtens
 {
     // Create an extension area for the pannable area plugins
     MApplicationExtensionArea *extensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
-    extensionArea->setObjectName("StatusIndicatorMenuVerticalExtensionArea");
+    extensionArea->setObjectName("StatusIndicatorDropDownMenuExtensionArea");
 
     QStringList order;
     QRegExp filter;
@@ -243,7 +243,7 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
     }
 
     MWidgetController *contentWidget = new MStylableWidget;
-    contentWidget->setStyleName("StatusIndicatorMenuExtensionAreaWidget");
+    contentWidget->setStyleName("StatusIndicatorDropDownMenuExtensionAreaWidget");
     contentWidget->setLayout(contentLayout);
 
     QGraphicsLinearLayout *pannableLayout = new QGraphicsLinearLayout(Qt::Vertical);

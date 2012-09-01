@@ -1,22 +1,17 @@
-@const CB_FONT_COLOR_INVERTED: #FFFFFF;
-@const CB_FONT_COLOR_INVERTED_PRESSED: #797979;
-@const CB_FONT_COLOR_INVERTED_SELECTED: #FFFFFF;
-@const CB_FONT_COLOR_INVERTED_DISABLED: #4E4E4E;
-
-@const CB_BG_INVERTED:          meegotouch-button-inverted-background;
-@const CB_BG_INVERTED_PRESSED:  meegotouch-button-inverted-background-pressed;
-@const CB_BG_INVERTED_SELECTED: meegotouch-button-inverted-background-selected;
-@const CB_BG_INVERTED_DISABLED: meegotouch-button-inverted-background-disabled;
-
 NotificationAreaStyle {
     minimum-size: 100% 0;
     maximum-size: 100% -1;
-    margin-left:   15;
+    margin-left:   16;
     margin-top:    0;
-    margin-right:  15;
+    margin-right:  16;
     margin-bottom: 0;
     clear-button: true;
     max-banners: -1;
+}
+
+NotificationAreaStyle.Landscape {
+    minimum-size: 49.2mm 0;
+    maximum-size: 49.2mm -1;
 }
 
 MAbstractLayoutPolicyStyle#NotificationAreaBannerLayoutPolicy {
@@ -35,29 +30,16 @@ MButtonStyle#NotificationAreaClearButton {
 }
 
 MButtonStyle#NotificationAreaClearButtonVisible {
-    margin-bottom: 40;
-    minimum-size: 70% $SIZE_BUTTON;
-    maximum-size: 70% $SIZE_BUTTON;
-    text-color:      $CB_FONT_COLOR_INVERTED;
-    background-image: $CB_BG_INVERTED $CORNER_MARGINS;
-    horizontal-align: center;
-}
-
-MButtonStyle#NotificationAreaClearButtonVisible:pressed {
-background-image:$CB_BG_INVERTED_PRESSED $CORNER_MARGINS;
-text-color:      $CB_FONT_COLOR_INVERTED_PRESSED;
-}
-MButtonStyle#NotificationAreaClearButtonVisible:selected {
-background-image:$CB_BG_INVERTED_SELECTED $CORNER_MARGINS;
-text-color:      $CB_FONT_COLOR_INVERTED_SELECTED;
-}
-MButtonStyle#NotificationAreaClearButtonVisible:disabled {
-background-image:$CB_BG_INVERTED_DISABLED $CORNER_MARGINS;
-text-color:      $CB_FONT_COLOR_INVERTED_DISABLED;
+    margin-left: 5;
+    margin-right: 5;
+    margin-top: 20;
+    margin-bottom: 20;
+    minimum-size: 46mm 42;
+    maximum-size: 46mm 42;
 }
 
 MWidgetStyle#AndMore {
-    maximum-size: 0 0;
+    maximum-size: 100% 0;
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
@@ -69,7 +51,7 @@ MWidgetStyle#AndMore {
 }
 
 MWidgetStyle#AndMoreVisible {
-    maximum-size: 0 0;
+    maximum-size: 100% 0;
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
@@ -82,7 +64,7 @@ MWidgetStyle#AndMoreVisible {
 
 MLabelStyle#AndMoreLabel {
     font: $FONT_XSMALL;
-    color: #000000;
+    color: #ffffff;
 }
 
 MBannerStyle {

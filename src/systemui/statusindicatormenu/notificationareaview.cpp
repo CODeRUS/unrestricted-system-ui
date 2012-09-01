@@ -70,9 +70,9 @@ NotificationAreaView::NotificationAreaView(NotificationArea *controller) :
     clearButtonLayout->setSpacing(0);
     clearButton->setStyleName("NotificationAreaClearButton");
     connect(clearButton, SIGNAL(clicked()), controller, SLOT(removeAllRemovableBanners()));
-    clearButtonLayout->addStretch();
+//    clearButtonLayout->addStretch();
     clearButtonLayout->addItem(clearButton);
-    clearButtonLayout->addStretch();
+//    clearButtonLayout->addStretch();
 }
 
 NotificationAreaView::~NotificationAreaView()
