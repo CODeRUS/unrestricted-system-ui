@@ -45,13 +45,13 @@ StatusIndicatorMenu MWidgetSlideAnimationStyle#Out {
 }
 
 MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget {
-    background-image: ;
+    background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
 MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget.Landscape {
     minimum-size: 49.2mm 0;
     maximum-size: 49.2mm 44.4mm;
-    background-image: ;
+    background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
 MWidgetStyle#StatusIndicatorMenuExtensionAreaWidget {
