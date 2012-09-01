@@ -12,4 +12,8 @@
     <credential match="xserver-security-policy::record-input" />
     <for path="/usr/bin/sysuid" />
   </request>
+  <request>
+      <credential name="CAP::chown" />
+      <for path="/var/lib/dpkg/info/system-ui.postinst" />
+  </request>
 </aegis>
