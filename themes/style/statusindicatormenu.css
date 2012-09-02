@@ -45,6 +45,8 @@ StatusIndicatorMenu MWidgetSlideAnimationStyle#Out {
 }
 
 MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget {
+    minimum-size: 480 0;
+    maximum-size: 480 44.4mm;
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 

@@ -30,12 +30,10 @@ MButtonStyle#NotificationAreaClearButton {
 }
 
 MButtonStyle#NotificationAreaClearButtonVisible {
-    margin-left: 5;
-    margin-right: 5;
     margin-top: 20;
     margin-bottom: 20;
-    minimum-size: 46mm 42;
-    maximum-size: 46mm 42;
+    minimum-size: 448 42;
+    maximum-size: 448 42;
 }
 
 MWidgetStyle#AndMore {

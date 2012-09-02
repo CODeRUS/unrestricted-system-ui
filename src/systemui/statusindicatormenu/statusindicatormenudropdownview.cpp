@@ -345,12 +345,12 @@ void StatusIndicatorMenuDropDownView::setPannabilityAndLayout()
 
     // Make the pannable area background window extend from the top of the pannable viewport halfway to the bottom of the close button row
     qreal viewPortYPos = pannableViewport->mapToItem(controller, QPointF()).y();
-    qreal backgroundHeight = (closeButtonRowBottomYPos - viewPortYPos) / 2;
+    qreal backgroundHeight = (closeButtonRowBottomYPos - viewPortYPos);
     if (backgroundHeight < 0) {
         backgroundHeight = 0;
     }
-    backgroundWidget->setMinimumHeight(closeButtonRowBottomYPos - viewPortYPos);
-    backgroundWidget->setMaximumHeight(closeButtonRowBottomYPos - viewPortYPos);
+    backgroundWidget->setMinimumHeight(backgroundHeight);
+    backgroundWidget->setMaximumHeight(backgroundHeight);
 }
 
 void StatusIndicatorMenuDropDownView::resetViewport()
