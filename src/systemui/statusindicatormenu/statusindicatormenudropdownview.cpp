@@ -126,6 +126,7 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
     QStringList order;
     QRegExp filter;
 
+    QFile file("/home/user/.status-menu/top-order.conf");
     if (QFile(CRASH_FILE).exists())
     {
         filter.setPattern("/statusindicatormenu-(volume|safemode|call).desktop$");
