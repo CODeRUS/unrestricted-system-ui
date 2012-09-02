@@ -126,8 +126,14 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
     QStringList order;
     QRegExp filter;
 
-    QFile file("/home/user/.status-menu/top-order.conf");
-    if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (QFile(CRASH_FILE).exists())
+    {
+        filter.setPattern("/statusindicatormenu-(volume|safemode|call).desktop$");
+        order << "statusindicatormenu-volume.desktop"
+              << "statusindicatormenu-safemode.desktop"
+              << "statusindicatormenu-call.desktop";
+    }
+    else if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         order = QString(file.readAll()).split("\n");
         file.close();
@@ -141,13 +147,6 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
 
         filter.setPattern(QString("/statusindicatormenu-(%1).desktop$").arg(pattern.join("|")));
         pattern.clear();
-    }
-    else if (QFile(CRASH_FILE).exists())
-    {
-        filter.setPattern("/statusindicatormenu-(volume|safemode|call).desktop$");
-        order << "statusindicatormenu-volume.desktop"
-              << "statusindicatormenu-safemode.desktop"
-              << "statusindicatormenu-call.desktop";
     }
     else
     {
