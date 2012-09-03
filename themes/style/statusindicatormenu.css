@@ -8,7 +8,7 @@ StatusIndicatorDropDownMenuStyle {
     notification-area: true;
     background-opacity: 0.8;
     minimum-size: 100% 0;
-    maximum-size: 100% 100%;
+    maximum-size: 100% -1;
 }
 
 StatusIndicatorDropDownMenuStyle.Landscape {
@@ -46,7 +46,7 @@ StatusIndicatorMenu MWidgetSlideAnimationStyle#Out {
 
 MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget {
     minimum-size: 480 0;
-    maximum-size: 480 44.4mm;
+    maximum-size: 480 -1;
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
