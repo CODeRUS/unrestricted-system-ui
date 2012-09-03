@@ -34,6 +34,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <MGConfItem>
+#include <MPositionIndicator>
 #include "statusindicatormenu.h"
 #include "statusindicatormenudropdownview.h"
 #include "statusindicatordropdownmenustyle.h"
@@ -239,7 +240,11 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
         NotificationArea *notificationArea = new NotificationArea;
         notificationArea->setNotificationManagerInterface(Sysuid::instance()->notificationManagerInterface());
         connect(notificationArea, SIGNAL(bannerClicked()), controller, SIGNAL(hideRequested()));
-        contentLayout->addItem(notificationArea);
+        MGConfItem *bottomNotifications = new MGConfItem("/desktop/meego/status_menu/bottom_notifications", this);
+        if (bottomNotifications->value(true).toBool())
+            contentLayout->addItem(notificationArea);
+        else
+            contentLayout->insertItem(0, notificationArea);
     }
 
     MWidgetController *contentWidget = new MStylableWidget;
@@ -263,10 +268,12 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
     connect(pannedWidget, SIGNAL(pressedOutSideContents()), controller, SIGNAL(hideRequested()));
 
     // Setup the pannable viewport
-    MPannableViewport *pannableViewport = new MPannableViewport;
-    pannableViewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    MPannableViewport *pannableViewport = new MPannableViewport();
+    //pannableViewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     pannableViewport->setVerticalPanningPolicy(MPannableWidget::PanningAsNeeded);
     pannableViewport->setWidget(pannedWidget);
+    pannableViewport->setStyleName("StatusIndicatorMenuViewport");
+    pannableViewport->positionIndicator()->setStyleName("CommonPositionIndicatorInverted");
     return pannableViewport;
 }
 
@@ -376,7 +383,7 @@ void StatusIndicatorMenuDropDownView::applyStyle()
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         layout->addItem(topRowWidget);
-        layout->addItem(backgroundLayout);
+        //layout->addItem(backgroundLayout);
         layout->addItem(pannableViewport);
         controller->setLayout(layout);
     }

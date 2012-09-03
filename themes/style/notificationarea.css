@@ -1,6 +1,6 @@
 NotificationAreaStyle {
-    minimum-size: 100% 0;
-    maximum-size: 100% -1;
+    minimum-size: 400 0;
+    maximum-size: 400 -1;
     margin-left:   16;
     margin-top:    0;
     margin-right:  16;
@@ -9,12 +9,9 @@ NotificationAreaStyle {
     max-banners: -1;
 }
 
-NotificationAreaStyle.Landscape {
-    minimum-size: 49.2mm 0;
-    maximum-size: 49.2mm -1;
-}
-
 MAbstractLayoutPolicyStyle#NotificationAreaBannerLayoutPolicy {
+    minimum-size: 400 0;
+    maximum-size: 400 -1;
     vertical-spacing: 0.8mm;
     margin-left: 0;
     margin-right: 0;

@@ -7,13 +7,8 @@ StatusIndicatorDropDownMenuStyle {
     padding-top: 0;
     notification-area: true;
     background-opacity: 0.8;
-    minimum-size: 100% 0;
-    maximum-size: 100% -1;
-}
-
-StatusIndicatorDropDownMenuStyle.Landscape {
-    minimum-size: 49.2mm 0;
-    maximum-size: 49.2mm 44.4mm;
+    minimum-size: 480 -1;
+    maximum-size: 480 -1;
 }
 
 MSceneLayerEffect#MenuSceneLayerEffect MWidgetFadeAnimationStyle#In {
@@ -45,14 +40,6 @@ StatusIndicatorMenu MWidgetSlideAnimationStyle#Out {
 }
 
 MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget {
-    minimum-size: 480 0;
-    maximum-size: 480 -1;
-    background-color: $COLOR_INVERTED_BACKGROUND;
-}
-
-MWidgetStyle#StatusIndicatorDropDownMenuExtensionAreaWidget.Landscape {
-    minimum-size: 49.2mm 0;
-    maximum-size: 49.2mm 44.4mm;
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
@@ -70,8 +57,8 @@ MWidgetStyle#CloseButtonArea {
 
 MWidgetStyle#StatusIndicatorMenuWindowBackground {
     background-color: $COLOR_INVERTED_BACKGROUND;
-    minimum-size: 49.2mm 0;
-    maximum-size: 49.2mm 0;
+    minimum-size: 480 0;
+    maximum-size: 480 0;
 }
 
 MStatusBarStyle#StatusIndicatorMenuWindowStatusBar {
@@ -116,16 +103,18 @@ MButtonStyle#StatusIndicatorMenuCloseButton {
 
 MOverlayStyle#CloseButtonOverlay {
     background-color: $COLOR_INVERTED_BACKGROUND;
-    minimum-size: 100% 6mm;
-    preferred-size: 100% 6mm;
-    maximum-size: 100% 6mm;
+    minimum-size: 480 6mm;
+    preferred-size: 480 6mm;
+    maximum-size: 480 6mm;
     offset: 0 0;
     vertical-align: bottom;
     horizontal-align: left;
 }
 
 MApplicationExtensionAreaStyle#StatusIndicatorDropDownMenuExtensionArea {
-    background-image: ;
+    padding-left: 0mm;
+    padding-right: 0mm;
+    background-color: $COLOR_INVERTED_BACKGROUND;
     layout-orientation: vertical;
     container-mode: false;
 }
@@ -139,9 +128,9 @@ MPannableWidgetStyle#StatusIndicatorMenuViewport {
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 0;
-    minimum-size: -1 -1;
-    preferred-size: -1 -1;
-    maximum-size: -1 -1;
+    minimum-size: 480 -1;
+    preferred-size: 480 -1;
+    maximum-size: 480 -1;
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
