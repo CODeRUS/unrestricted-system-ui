@@ -149,10 +149,6 @@ MPannableWidgetStyle#StatusIndicatorDropDownMenuViewport {
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
-MPannableWidgetStyle#StatusIndicatorDropDownMenuViewport {
-    background-color: $COLOR_INVERTED_BACKGROUND;
-}
-
 MContainerStyle#MExtensionAreaInvisibleContainer {
     background-image: ;
 }
