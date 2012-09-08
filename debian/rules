@@ -92,10 +92,10 @@ binary-arch: build install
 	dh_installchangelogs $(EXCLUSIONS)
 	dh_installdocs $(EXCLUSIONS)
 	dh_install --sourcedir=debian/tmp $(EXCLUSIONS)
-	mkdir -p debian/system-ui/home/user/.status-menu
-	cp -v data/items-order.conf debian/system-ui/home/user/.status-menu/items-order.conf
-	cp -v data/top-order.conf debian/system-ui/home/user/.status-menu/top-order.conf
-	cp -v data/pannable-order.conf debian/system-ui/home/user/.status-menu/pannable-order.conf
+	mkdir -p debian/system-ui/etc/status-menu
+	cp -v data/items-order.conf debian/system-ui/etc/status-menu/items-order.conf
+	cp -v data/top-order.conf debian/system-ui/etc/status-menu/top-order.conf
+	cp -v data/pannable-order.conf debian/system-ui/etc/status-menu/pannable-order.conf
 	# Sigh
 	mkdir -p debian/system-ui/usr/lib/meegotouch/applicationextensions
 	mkdir -p debian/system-ui/usr/share/meegotouch/applicationextensions
@@ -107,7 +107,7 @@ binary-arch: build install
 	dh_fixperms $(EXCLUSIONS)
 	dh_makeshlibs $(EXCLUSIONS)
 	dh_installdeb $(EXCLUSIONS)
-	dh_shlibdeps $(EXCLUSIONS)
+#	dh_shlibdeps $(EXCLUSIONS)
 	dh_gencontrol $(EXCLUSIONS)
 	dh_md5sums $(EXCLUSIONS)
 	dh_builddeb --destdir=$(DEBDIR) $(EXCLUSIONS)

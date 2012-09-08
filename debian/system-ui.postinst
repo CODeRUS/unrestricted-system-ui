@@ -1,5 +1,17 @@
 #!/bin/sh
 
+mkdir -p /home/user/.status-menu
+
+if [ ! -f /home/user/.status-menu/items-order.conf ]; then
+  cp -v /etc/status-menu/items-order.conf /home/user/.status-menu/
+fi
+if [ ! -f /home/user/.status-menu/top-order.conf ]; then
+  cp -v /etc/status-menu/top-order.conf /home/user/.status-menu/
+fi
+if [ ! -f /home/user/.status-menu/pannable-order.conf ]; then
+  cp -v /etc/status-menu/pannable-order.conf /home/user/.status-menu/
+fi
+
 chown -R user:users /home/user/.status-menu/
 
 if [ -n "`initctl status xsession/sysuid | grep running`" ]
