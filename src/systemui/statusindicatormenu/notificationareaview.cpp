@@ -42,7 +42,7 @@ NotificationAreaView::NotificationAreaView(NotificationArea *controller) :
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->addItem(bannerLayout);
-    mainLayout->addItem(andMore);
+    //mainLayout->addItem(andMore);
     mainLayout->addItem(clearButtonLayout);
     controller->setLayout(mainLayout);
 
@@ -53,17 +53,17 @@ NotificationAreaView::NotificationAreaView(NotificationArea *controller) :
     bannerLayout->setPolicy(bannerPolicy);
 
     // Create the "and more" area
-    andMore->setStyleName("AndMore");
-    andMore->setVisible(false);
+    //andMore->setStyleName("AndMore");
+    //andMore->setVisible(false);
     //% "And more"
-    MLabel *andMoreLabel = new MLabel(qtTrId("qtn_noti_and_more"));
-    andMoreLabel->setStyleName("AndMoreLabel");
-    QGraphicsLinearLayout *andMoreLayout = new QGraphicsLinearLayout(Qt::Horizontal);
-    andMoreLayout->setContentsMargins(0, 0, 0, 0);
-    andMoreLayout->setSpacing(0);
-    andMoreLayout->addStretch();
-    andMoreLayout->addItem(andMoreLabel);
-    andMore->setLayout(andMoreLayout);
+    //MLabel *andMoreLabel = new MLabel(qtTrId("qtn_noti_and_more"));
+    //andMoreLabel->setStyleName("AndMoreLabel");
+    //QGraphicsLinearLayout *andMoreLayout = new QGraphicsLinearLayout(Qt::Horizontal);
+    //andMoreLayout->setContentsMargins(0, 0, 0, 0);
+    //andMoreLayout->setSpacing(0);
+    //andMoreLayout->addStretch();
+    //andMoreLayout->addItem(andMoreLabel);
+    //andMore->setLayout(andMoreLayout);
 
     // Put a clear button into the clear button layout
     clearButtonLayout->setContentsMargins(0, 0, 0, 0);
@@ -120,9 +120,9 @@ void NotificationAreaView::updateLayout()
     }
 
     // If there are more than maximum number of banners to be added show "and more"
-    bool andMoreVisible = style()->maxBanners() >= 0 && model()->banners().count() > style()->maxBanners();
-    andMore->setStyleName(andMoreVisible ? "AndMoreVisible" : "AndMore");
-    andMore->setVisible(andMoreVisible);
+    //bool andMoreVisible = style()->maxBanners() >= 0 && model()->banners().count() > style()->maxBanners();
+    //andMore->setStyleName(andMoreVisible ? "AndMoreVisible" : "AndMore");
+    //andMore->setVisible(andMoreVisible);
 
     // If removable banners exist make the clear button visible
     clearButton->setStyleName((removableBannersExist && style()->clearButton()) ? "NotificationAreaClearButtonVisible" : "NotificationAreaClearButton");

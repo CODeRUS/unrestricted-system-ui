@@ -134,6 +134,25 @@ MPannableWidgetStyle#StatusIndicatorMenuViewport {
     background-color: $COLOR_INVERTED_BACKGROUND;
 }
 
+MPannableWidgetStyle#StatusIndicatorDropDownMenuViewport {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    minimum-size: 480 -1;
+    preferred-size: 480 -1;
+    maximum-size: 480 -1;
+    background-color: $COLOR_INVERTED_BACKGROUND;
+}
+
+MPannableWidgetStyle#StatusIndicatorDropDownMenuViewport {
+    background-color: $COLOR_INVERTED_BACKGROUND;
+}
+
 MContainerStyle#MExtensionAreaInvisibleContainer {
     background-image: ;
 }

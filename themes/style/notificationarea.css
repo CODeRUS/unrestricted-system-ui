@@ -27,10 +27,17 @@ MButtonStyle#NotificationAreaClearButton {
 }
 
 MButtonStyle#NotificationAreaClearButtonVisible {
-    margin-top: 20;
-    margin-bottom: 20;
-    minimum-size: 448 42;
-    maximum-size: 448 42;
+    margin-top:       10;
+    margin-bottom:    20;
+    minimum-size:     448 42;
+    maximum-size:     448 42;
+    text-color:       #ffffff;
+    background-image: meegotouch-button-inverted-background $CORNER_MARGINS;
+}
+
+MButtonStyle#NotificationAreaClearButtonVisible:pressed {
+    background-image: meegotouch-button-inverted-background-pressed $CORNER_MARGINS;
+    text-color:       #797979;
 }
 
 MWidgetStyle#AndMore {

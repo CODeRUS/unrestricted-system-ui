@@ -156,11 +156,6 @@ private:
     //! Extension area for pannable area plugins
     MApplicationExtensionArea* createVerticalExtensionArea();
 
-    /*!
-     * Sets whether or not non-official plugins will be loaded
-     */
-    void setSafeMode(MApplicationExtensionArea *extensionArea, bool enabled);
-
     //! The pannable area viewport
     MPannableViewport *pannableViewport;
 
@@ -176,15 +171,8 @@ private:
     //! Creates pannable area
     MPannableViewport *createPannableArea();
 
-    //! Creates close button row
-    QGraphicsWidget *createCloseButtonRow();
-
     //! Creates close button overlay
     MOverlay *createCloseButtonOverlay();
-
-    //! Pannable area background widget
-    MWidgetController *backgroundWidget;
-
 
 #ifdef UNIT_TEST
     friend class Ut_StatusIndicatorMenuDropDownView;

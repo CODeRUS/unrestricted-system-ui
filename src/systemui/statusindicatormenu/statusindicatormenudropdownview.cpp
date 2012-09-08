@@ -92,14 +92,10 @@ StatusIndicatorMenuDropDownView::StatusIndicatorMenuDropDownView(StatusIndicator
     fixedPluginsExtensionArea(NULL),
     statusIndicatorExtensionArea(NULL),
     pannableViewport(NULL),
-    closeButtonOverlay(NULL),
-    backgroundWidget(new MStylableWidget)
+    closeButtonOverlay(NULL)
 {
     // Create close button overlay
     closeButtonOverlay = createCloseButtonOverlay();
-
-    // Create the pannable area background widget
-    backgroundWidget->setStyleName("StatusIndicatorMenuWindowBackground");
 
     connect(controller, SIGNAL(hideRequested()), this, SLOT(resetViewport()));
     connect(controller, SIGNAL(displayEntered()), SLOT(ensureIsViewable()));
@@ -111,7 +107,6 @@ StatusIndicatorMenuDropDownView::StatusIndicatorMenuDropDownView(StatusIndicator
 
 StatusIndicatorMenuDropDownView::~StatusIndicatorMenuDropDownView()
 {
-    delete backgroundWidget;
     delete closeButtonOverlay;
     delete pannableViewport;
     delete topRowWidget;
@@ -123,6 +118,7 @@ QGraphicsWidget* StatusIndicatorMenuDropDownView::createTopRow()
     fixedPluginsExtensionArea = new MApplicationExtensionArea("com.meego.core.MStatusIndicatorMenuExtensionInterface/1.0");
     connect(fixedPluginsExtensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), controller, SLOT(setStatusIndicatorMenuInterface(MApplicationExtensionInterface*)));
     fixedPluginsExtensionArea->setObjectName("StatusIndicatorDropDownMenuExtensionArea");
+    fixedPluginsExtensionArea->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     QStringList order;
     QRegExp filter;
@@ -220,10 +216,6 @@ MApplicationExtensionArea* StatusIndicatorMenuDropDownView::createVerticalExtens
     return extensionArea;
 }
 
-void StatusIndicatorMenuDropDownView::setSafeMode(MApplicationExtensionArea *extensionArea, bool enabled)
-{
-}
-
 MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
 {
     // Create pannable area contents
@@ -255,51 +247,22 @@ MPannableViewport* StatusIndicatorMenuDropDownView::createPannableArea()
     pannableLayout->setContentsMargins(0, 0, 0, 0);
     pannableLayout->setSpacing(0);
     pannableLayout->addItem(contentWidget);
-    //QGraphicsWidget *closeButtonRow = createCloseButtonRow();
-    //pannableLayout->addItem(closeButtonRow);
-    pannableLayout->addStretch();
 
     // Create a container widget for the pannable area
     PannedWidgetController *pannedWidget = new PannedWidgetController;
     pannedWidget->setLayout(pannableLayout);
-    //pannedWidget->setBottommostWidget(closeButtonRow);
     pannedWidget->setBottommostWidget(contentWidget);
     connect(pannedWidget, SIGNAL(positionOrSizeChanged()), this, SLOT(setPannabilityAndLayout()));
     connect(pannedWidget, SIGNAL(pressedOutSideContents()), controller, SIGNAL(hideRequested()));
 
     // Setup the pannable viewport
     MPannableViewport *pannableViewport = new MPannableViewport();
-    //pannableViewport->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    pannableViewport->setVerticalPanningPolicy(MPannableWidget::PanningAsNeeded);
     pannableViewport->setWidget(pannedWidget);
-    pannableViewport->setStyleName("StatusIndicatorMenuViewport");
+    pannableViewport->setVerticalPanningPolicy(MPannableWidget::PanningAlwaysOn);
+    pannableViewport->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Maximum);
+    pannableViewport->setStyleName("StatusIndicatorDropDownMenuViewport");
     pannableViewport->positionIndicator()->setStyleName("CommonPositionIndicatorInverted");
     return pannableViewport;
-}
-
-QGraphicsWidget* StatusIndicatorMenuDropDownView::createCloseButtonRow()
-{
-    // Create a close button for the pannable area
-    MButton *closeButton = new MButton;
-    closeButton->setViewType("icon");
-    closeButton->setObjectName("StatusIndicatorMenuCloseButton");
-    closeButton->setIconID("icon-m-framework-close-thumbnail");
-    connect(closeButton, SIGNAL(clicked()), controller, SIGNAL(hideRequested()));
-
-    // Add two overlay widgets that will not allow mouse events to pass through them next to the close button
-    QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Horizontal);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addItem(new EventEaterWidget);
-    layout->addItem(closeButton);
-    layout->addItem(new EventEaterWidget);
-
-    // Create the area itself
-    MWidgetController *closeButtonArea = new MStylableWidget;
-    closeButtonArea->setStyleName("CloseButtonArea");
-    closeButtonArea->setLayout(layout);
-
-    return closeButtonArea;
 }
 
 MOverlay *StatusIndicatorMenuDropDownView::createCloseButtonOverlay()
@@ -340,24 +303,15 @@ void StatusIndicatorMenuDropDownView::setPannabilityAndLayout()
 {
     // Appear or disappear the close button overlay based on close area position
     const QGraphicsWidget *m_bottommostWidget = static_cast<PannedWidgetController *>(pannableViewport->widget())->bottommostWidget();
-    qreal closeButtonRowBottomYPos = m_bottommostWidget->mapToItem(controller, QPointF(0, m_bottommostWidget->geometry().height())).y();
+    qreal bottommostWidgetBottomYPos = m_bottommostWidget->mapToItem(controller, QPointF(0, m_bottommostWidget->geometry().height())).y();
     if (controller->sceneManager()) {
         qreal screenHeight = controller->sceneManager()->visibleSceneSize().height();
-        if (closeButtonRowBottomYPos <= screenHeight) {
+        if (bottommostWidgetBottomYPos <= screenHeight) {
             controller->sceneManager()->disappearSceneWindowNow(closeButtonOverlay);
         } else {
             controller->sceneManager()->appearSceneWindowNow(closeButtonOverlay);
         }
     }
-
-    // Make the pannable area background window extend from the top of the pannable viewport halfway to the bottom of the close button row
-    qreal viewPortYPos = pannableViewport->mapToItem(controller, QPointF()).y();
-    qreal backgroundHeight = (closeButtonRowBottomYPos - viewPortYPos);
-    if (backgroundHeight < 0) {
-        backgroundHeight = 0;
-    }
-    backgroundWidget->setMinimumHeight(backgroundHeight);
-    backgroundWidget->setMaximumHeight(backgroundHeight);
 }
 
 void StatusIndicatorMenuDropDownView::resetViewport()
@@ -370,12 +324,6 @@ void StatusIndicatorMenuDropDownView::applyStyle()
     MSceneWindowView::applyStyle();
 
     if (pannableViewport == NULL) {
-        QGraphicsAnchorLayout *backgroundLayout = new QGraphicsAnchorLayout;
-        backgroundLayout->setContentsMargins(0, 0, 0, 0);
-        backgroundLayout->setSpacing(0);
-        backgroundLayout->addCornerAnchors(backgroundWidget, Qt::TopLeftCorner, backgroundLayout, Qt::TopLeftCorner);
-        backgroundLayout->setMaximumHeight(0);
-
         // Put all the stuff into the scene window layout
         pannableViewport = createPannableArea();
         topRowWidget = createTopRow();
@@ -383,7 +331,6 @@ void StatusIndicatorMenuDropDownView::applyStyle()
         layout->setContentsMargins(0, 0, 0, 0);
         layout->setSpacing(0);
         layout->addItem(topRowWidget);
-        //layout->addItem(backgroundLayout);
         layout->addItem(pannableViewport);
         controller->setLayout(layout);
     }
