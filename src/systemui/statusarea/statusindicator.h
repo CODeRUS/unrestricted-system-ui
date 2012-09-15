@@ -407,6 +407,7 @@ private:
     ContextItem *cellularServiceStatus;
     ContextItem *cellularRegistrationStatus;
     MGConfItem *displayLimitedServiceState;
+    MGConfItem *displayNetworkName;
     QTimer networkChangeShowVisitorTimer;
 
 #ifdef UNIT_TEST

@@ -306,6 +306,7 @@ BatteryStatusIndicator::BatteryStatusIndicator(ApplicationContext &context, QGra
         setStyleName(QString(metaObject()->className()) + BATTERY_MODE_POWERSAVE);
     }
 
+    batteryPercentageChanged();
     batteryLevelChanged ();
 }
 
@@ -384,6 +385,7 @@ void BatteryStatusIndicator::batteryPercentageChanged()
     }
     else
     {
+        batteryLevelChanged();
         batteryChargingChanged();
         connect(batteryLevel, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
         connect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryChargingChanged()), Qt::UniqueConnection);
@@ -407,6 +409,9 @@ BatteryPercentageStatusIndicator::BatteryPercentageStatusIndicator(ApplicationCo
     
     displayPercentage = new MGConfItem("/desktop/meego/status_area/display_percentage", this);
     connect(displayPercentage, SIGNAL(valueChanged()), this, SLOT(batteryPercentageChanged()));
+
+    batteryPercentageChanged();
+    batteryLevelChanged();
 }
 
 BatteryPercentageStatusIndicator::~BatteryPercentageStatusIndicator()
@@ -435,6 +440,7 @@ void BatteryPercentageStatusIndicator::batteryPercentageChanged()
         connect(batteryPercentage, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
         connect(batteryCharging, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
         connect(batterySaveMode, SIGNAL(contentsChanged()), this, SLOT(batteryLevelChanged()), Qt::UniqueConnection);
+        batteryLevelChanged();
     }
     else
     {
@@ -552,9 +558,11 @@ PhoneNetworkStatusIndicator::PhoneNetworkStatusIndicator(ApplicationContext &con
     cellularServiceStatus = createContextItem(context, "Cellular.ServiceStatus");
     cellularRegistrationStatus = createContextItem(context, "Cellular.RegistrationStatus");
     displayLimitedServiceState = new MGConfItem("/desktop/meego/status_area/display_limited_service_state", this);
+    displayNetworkName = new MGConfItem("/desktop/meego/status_area/display_network_name", this);
     connect(networkName, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
     connect(extendedNetworkName, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
     connect(displayLimitedServiceState, SIGNAL(valueChanged()), this, SLOT(phoneNetworkChanged()));
+    connect(displayNetworkName, SIGNAL(valueChanged()), this, SLOT(phoneNetworkChanged()));
     connect(&networkChangeShowVisitorTimer, SIGNAL(timeout()), this, SLOT(showVisitorNetworkName()));
     networkChangeShowVisitorTimer.setSingleShot(true);
     networkChangeShowVisitorTimer.setInterval(3 * 1000);
@@ -614,50 +622,55 @@ void PhoneNetworkStatusIndicator::phoneNetworkChanged()
         networkChangeShowVisitorTimer.stop();
     }
 
-    // Check whether limited service state displaying is enabled
-    bool limitedService = false;
-    bool noCoverage = false;
-    bool displayLimitedServiceStateEnabled = displayLimitedServiceState->value(true).toBool();
-    if (displayLimitedServiceStateEnabled) {
-        // Limited service state should be displayed: Changes in the cellular service status and registration status are interesting
-        connect(cellularServiceStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()), Qt::UniqueConnection);
-        connect(cellularRegistrationStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()), Qt::UniqueConnection);
+    if (displayNetworkName->value(true).toBool())
+    {
+        // Check whether limited service state displaying is enabled
+        bool limitedService = false;
+        bool noCoverage = false;
+        bool displayLimitedServiceStateEnabled = displayLimitedServiceState->value(true).toBool();
+        if (displayLimitedServiceStateEnabled) {
+            // Limited service state should be displayed: Changes in the cellular service status and registration status are interesting
+            connect(cellularServiceStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()), Qt::UniqueConnection);
+            connect(cellularRegistrationStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()), Qt::UniqueConnection);
 
-        // Check if there is limited service
-        limitedService = cellularServiceStatus->value().toString() == "limited-service";
+            // Check if there is limited service
+            limitedService = cellularServiceStatus->value().toString() == "limited-service";
 
-        // Check if there is no coverage and the device is not in offline mode
-        noCoverage = cellularServiceStatus->value().toString() == "no-coverage" && cellularRegistrationStatus->value().toString() != "offline";
-    } else {
-        // Limited service state should be displayed: Changes in the cellular service status and registration status are not interesting
-        disconnect(cellularServiceStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
-        disconnect(cellularRegistrationStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
-    }
+            // Check if there is no coverage and the device is not in offline mode
+            noCoverage = cellularServiceStatus->value().toString() == "no-coverage" && cellularRegistrationStatus->value().toString() != "offline";
+        } else {
+            // Limited service state should be displayed: Changes in the cellular service status and registration status are not interesting
+            disconnect(cellularServiceStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
+            disconnect(cellularRegistrationStatus, SIGNAL(contentsChanged()), this, SLOT(phoneNetworkChanged()));
+        }
 
-    QString home;
-    QString visitor;
-    if (limitedService) {
-        home = qtTrId("qtn_cell_emergency_calls_only");
-        model()->setStylePostfix("LimitedService");
-    } else if (noCoverage) {
-        home = qtTrId("qtn_stat_no_coverage");
-        model()->setStylePostfix("LimitedService");
-    } else {
-        home = homeNetwork();
-        visitor = visitorNetwork();
-        model()->setStylePostfix("");
-    }
-    setValue(home);
+        QString home;
+        QString visitor;
+        if (limitedService) {
+            home = qtTrId("qtn_cell_emergency_calls_only");
+            model()->setStylePostfix("LimitedService");
+        } else if (noCoverage) {
+            home = qtTrId("qtn_stat_no_coverage");
+            model()->setStylePostfix("LimitedService");
+        } else {
+            home = homeNetwork();
+            visitor = visitorNetwork();
+            model()->setStylePostfix("");
+        }
+        setValue(home);
 
-    if (visitor.isEmpty() && home.isEmpty()) {
-        setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
-    } else {
-        setStyleNameAndUpdate(metaObject()->className());
-        if (!visitor.isEmpty() && !home.isEmpty() && (home != visitor)) {
+        if (visitor.isEmpty() && home.isEmpty()) {
+            setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
+        } else {
             setStyleNameAndUpdate(metaObject()->className());
-            networkChangeShowVisitorTimer.start();
+            if (!visitor.isEmpty() && !home.isEmpty() && (home != visitor)) {
+                setStyleNameAndUpdate(metaObject()->className());
+                networkChangeShowVisitorTimer.start();
+            }
         }
     }
+    else
+        setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
 }
 
 void PhoneNetworkStatusIndicator::showVisitorNetworkName() {
