@@ -670,7 +670,10 @@ void PhoneNetworkStatusIndicator::phoneNetworkChanged()
         }
     }
     else
+    {
+        setValue(QString(""));
         setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
+    }
 }
 
 void PhoneNetworkStatusIndicator::showVisitorNetworkName() {
