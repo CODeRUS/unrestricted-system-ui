@@ -7,11 +7,12 @@
     <credential match="xserver-security-policy::capture-drawables" />
     <credential match="xserver-security-policy::record-input" />
     
-<!-- Preload credentials, allowed only with com.nokia.maemo origin -->
+<!-- Preload credentials, allowed only with com.nokia.maemo origin, or just preload for future installing applets w/o inception -->
     <credential name="dsme::DeviceStateControl" />
     <credential name="mce::DeviceModeControl" />
     <credential name="GRP::video"/>
     <credential name="GRP::pulse-access"/>
+    <credential name="Cellular"/>
 <!-- End preload -->
     
     <for path="/usr/bin/sysuid" />
