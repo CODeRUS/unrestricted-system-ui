@@ -37,7 +37,6 @@
 #include <MPositionIndicator>
 #include "statusindicatormenu.h"
 #include "statusindicatormenudropdownview.h"
-#include "statusindicatordropdownmenustyle.h"
 #include "sysuid.h"
 
 const int StatusIndicatorMenuDropDownView::VIEW_INITIALIZATION_DELAY = 30 * 1000;

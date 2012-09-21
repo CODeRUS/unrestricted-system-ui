@@ -671,13 +671,22 @@ void PhoneNetworkStatusIndicator::phoneNetworkChanged()
     }
     else
     {
-        setValue(QString(""));
+        setValue(QString());
         setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
     }
 }
 
 void PhoneNetworkStatusIndicator::showVisitorNetworkName() {
-    setValue(visitorNetwork());
+    if (displayNetworkName->value(true).toBool())
+    {
+        setValue(visitorNetwork());
+        setStyleNameAndUpdate(metaObject()->className());
+    }
+    else
+    {
+        setValue(QString());
+        setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
+    }
 }
 
 InputMethodStatusIndicator::InputMethodStatusIndicator(QGraphicsItem *parent) :

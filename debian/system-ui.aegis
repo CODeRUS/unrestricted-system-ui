@@ -4,16 +4,14 @@
     <credential name="GID::users" />
     <credential name="usb-moded::USBControl" />
     <credential name="mce::LEDControl" />
-    <credential name="mce::DeviceModeControl" />
-    <credential name="dsme::DeviceStateControl" />
-    <credential name="GRP::video" />
-    <credential name="GRP::pulse-access"/>
     <credential match="xserver-security-policy::capture-drawables" />
     <credential match="xserver-security-policy::record-input" />
+    
+<!-- Preload credentials, allowed only with com.nokia.maemo origin -->
+    <credential name="dsme::DeviceStateControl" />
+    <credential name="mce::DeviceModeControl" />
+<!-- End preload -->
+    
     <for path="/usr/bin/sysuid" />
-  </request>
-  <request>
-      <credential name="CAP::chown" />
-      <for path="/var/lib/dpkg/info/system-ui.postinst" />
   </request>
 </aegis>
