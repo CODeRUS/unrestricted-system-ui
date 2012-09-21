@@ -10,8 +10,13 @@
 <!-- Preload credentials, allowed only with com.nokia.maemo origin -->
     <credential name="dsme::DeviceStateControl" />
     <credential name="mce::DeviceModeControl" />
+    <credential name="GRP::video"/>
+    <credential name="GRP::pulse-access"/>
 <!-- End preload -->
     
     <for path="/usr/bin/sysuid" />
+  </request>
+  <request context="INSTALL">
+    <credential name="CAP::chown"/>
   </request>
 </aegis>
