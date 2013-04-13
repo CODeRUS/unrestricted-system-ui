@@ -11,7 +11,8 @@ SOURCES += statusarea/statusarea.cpp \
     statusarea/statusindicatoriconview.cpp \
     statusarea/statusindicator.cpp \
     statusarea/inputmethodstatusindicatoradaptor.cpp \
-    statusarea/statusarearendereradaptor.cpp
+    statusarea/statusarearendereradaptor.cpp \
+    statusarea/speedwrapper.cpp
 HEADERS += statusarea/statusarea.h \
     statusarea/statusareaview.h \
     statusarea/statusarearenderer.h \
@@ -30,7 +31,8 @@ HEADERS += statusarea/statusarea.h \
     statusarea/statusindicatoriconstyle.h \
     statusarea/statusindicator.h \
     statusarea/inputmethodstatusindicatoradaptor.h \
-    statusarea/statusarearendereradaptor.h
+    statusarea/statusarearendereradaptor.h \
+    statusarea/speedwrapper.h 
 MODEL_HEADERS += statusarea/statusareamodel.h \
     statusarea/clockmodel.h \
     statusarea/statusindicatormodel.h

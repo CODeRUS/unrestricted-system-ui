@@ -48,6 +48,7 @@
 #include "notificationstatusindicatorsink_stub.h"
 #include "inputmethodstatusindicatoradaptor_stub.h"
 #include "sysuid_stub.h"
+#include "netspeedindicator_stub.h"
 #include "x11wrapper_modified_stub.h"
 #include <MApplication>
 

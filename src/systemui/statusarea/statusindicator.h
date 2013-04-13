@@ -23,6 +23,7 @@
 #include <MWidgetController>
 #include <QDBusConnection>
 #include "statusindicatormodel.h"
+#include "speedwrapper.h"
 #include <QTimer>
 
 #ifdef HAVE_QMSYSTEM
@@ -186,7 +187,7 @@ private:
 class PhoneNetworkTypeStatusIndicator : public StatusIndicator
 {
     Q_OBJECT
-    M_CONTROLLER(PhoneNetworkTypeStatusIndicator);
+    M_CONTROLLER(PhoneNetworkTypeStatusIndicator)
 
 public:
     /*!
@@ -670,6 +671,32 @@ private slots:
 
 private:
     ContextItem *dlnaEnabled;
+};
+
+
+class NetSpeedIndicator : public StatusIndicator
+{
+    Q_OBJECT
+    M_CONTROLLER(NetSpeedIndicator)
+public:
+    explicit NetSpeedIndicator(ApplicationContext &context,QGraphicsItem *parent = NULL);
+    virtual ~NetSpeedIndicator();
+public slots:
+    void updateStatusIndicator();
+    void onlineChanged(bool);
+private slots:
+    void gconf_enable_changed();
+    void gconf_when_online_changed();
+private:
+    ContextItem *testIndicator;
+#ifndef UNIT_TEST
+    SpeedWrapper *m_speedWrapper;
+#endif
+    MGConfItem *m_enabled;
+    MGConfItem *m_gconf_when_online;
+    bool m_isEnabled;
+    bool m_isOnline;
+    bool m_when_online;
 };
 
 #endif // STATUSINDICATOR_H

@@ -521,6 +521,13 @@ StatusIndicatorLabelStyle#BatteryPercentageStatusIndicatorDisabled {
     maximum-size: 0 -1;
 }
 
+StatusIndicatorLabelStyle#NetSpeedIndicatorDisabled {
+    preferred-size: 0 -1;
+    minimum-size: 0 -1;
+    maximum-size: 0 -1;
+
+}
+
 StatusIndicatorIconStyle#AlarmStatusIndicator {
     /* The list of IDs of the images to be shown in the status indicator separated by spaces */
     image-list: "";

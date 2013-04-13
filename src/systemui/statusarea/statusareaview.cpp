@@ -72,6 +72,8 @@ StatusAreaView::StatusAreaView(StatusArea *controller) :
     portraitTransferStatusIndicator(new TransferStatusIndicator(controller)),
     landscapeClock(new Clock(controller)),
     portraitClock(new Clock(controller)),
+    landscapeNetSpeedIndicator(new NetSpeedIndicator(contextFrameworkContext,controller)),
+    portraitNetSpeedIndicator(new NetSpeedIndicator(contextFrameworkContext,controller)),
     callContextItem(contextFrameworkContext.createContextItem("Phone.Call"))
 {
     // Set the style names of the landscape and portrait widgets when the call state changes
@@ -153,6 +155,9 @@ void StatusAreaView::setupTestability()
     portraitDLNAIndicator->setParent(portraitWidget);
     landscapeTransferStatusIndicator->setParent(landscapeWidget);
     portraitTransferStatusIndicator->setParent(portraitWidget);
+    //! NetSpeed
+    portraitNetSpeedIndicator->setParent(portraitWidget);
+    landscapeNetSpeedIndicator->setParent(landscapeWidget);
 }
 
 StatusAreaView::~StatusAreaView()
@@ -184,6 +189,7 @@ QGraphicsLinearLayout* StatusAreaView::createLandscapeLayout()
     layout->addItem(landscapePhoneNetworkIndicator);
     layout->addItem(landscapePhoneNetworkTypeIndicator);
     layout->addStretch();
+    layout->addItem(landscapeNetSpeedIndicator);
     layout->addItem(landscapeNotificationIndicator);
     layout->addItem(landscapeTransferStatusIndicator);
     layout->addItem(landscapeCallIndicator);
@@ -214,6 +220,7 @@ QGraphicsLinearLayout* StatusAreaView::createPortraitLayout()
     layout->addItem(portraitPhoneNetworkIndicator);
     layout->addItem(portraitPhoneNetworkTypeIndicator);
     layout->addStretch();
+    layout->addItem(portraitNetSpeedIndicator);
     layout->addItem(portraitNotificationIndicator);
     layout->addItem(portraitTransferStatusIndicator);
     layout->addItem(portraitCallIndicator);
