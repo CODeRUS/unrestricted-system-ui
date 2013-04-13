@@ -1,6 +1,8 @@
 #ifndef SPEEDWRAPPER_H
 #define SPEEDWRAPPER_H
 
+#ifndef UNIT_TEST
+
 #include <QObject>
 #include <QTimer>
 #include <QFile>
@@ -23,6 +25,7 @@ struct bytes_data
           newRxBytes(newRx),
           newTxBytes(newTx)
     {}
+    bytes_data(){}
 };
 
 typedef struct
@@ -68,5 +71,6 @@ private:
     QString m_speed_interface;
     QNetworkConfigurationManager *m_network_conf_manager;
 };
+#endif
 
 #endif // SPEEDWRAPPER_H

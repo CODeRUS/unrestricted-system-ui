@@ -1,5 +1,7 @@
 #include "speedwrapper.h"
 
+#ifndef UNIT_TEST
+
 SpeedWrapper::SpeedWrapper(QObject *parent) :
     QObject(parent),
     m_tx_speed(0.0),
@@ -217,3 +219,5 @@ rxtxBytes SpeedWrapper::getIfaceStat(QString ifaceName, bool *ok)
     *ok = true;
     return bytes;
 }
+
+#endif

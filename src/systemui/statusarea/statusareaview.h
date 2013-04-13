@@ -147,6 +147,10 @@ private:
     Clock *landscapeClock;
     Clock *portraitClock;
 
+    //! Test
+    StatusIndicator *landscapeNetSpeedIndicator;
+    StatusIndicator *portraitNetSpeedIndicator;
+
     //! Call state context framework key
     ContextItem *callContextItem;
 
