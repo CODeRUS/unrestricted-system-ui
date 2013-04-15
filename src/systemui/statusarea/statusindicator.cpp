@@ -916,3 +916,89 @@ void DLNAStatusIndicator::dlnaEnabledChanged()
 {
     setStyleNameAndUpdate(QString(metaObject()->className()) + (dlnaEnabled->value().toBool() ? "Set" : ""));
 }
+
+NetSpeedIndicator::NetSpeedIndicator(ApplicationContext &context, QGraphicsItem *parent) :
+    StatusIndicator(parent),
+    testIndicator(createContextItem(context,"Test.TestIndicatorPercentage")),
+    m_isEnabled(false),
+    m_isOnline(false),
+    m_when_online(false)
+{
+    setStyleNameAndUpdate(metaObject()->className());
+
+#ifndef UNIT_TEST
+    m_speedWrapper = new SpeedWrapper(this);
+#endif
+    m_enabled = new MGConfItem("/desktop/meego/status_area/display_netspeed",this);
+    m_gconf_when_online = new MGConfItem("/desktop/meego/status_area/display_netspeed_whenOnline",this);
+
+#ifndef UNIT_TEST
+    connect(m_speedWrapper,SIGNAL(dataChanged()),SLOT(updateStatusIndicator()));
+    connect(m_speedWrapper,SIGNAL(onlineChanged(bool)),SLOT(onlineChanged(bool)));
+#endif
+    connect(testIndicator,SIGNAL(contentsChanged()),this,SLOT(updateStatusIndicator()));
+    connect(m_enabled,SIGNAL(valueChanged()),SLOT(gconf_enable_changed()));
+    connect(m_gconf_when_online,SIGNAL(valueChanged()),SLOT(gconf_when_online_changed()));
+
+#ifndef UNIT_TEST
+    m_isOnline = m_speedWrapper->isOnline();
+#endif
+
+    gconf_when_online_changed();
+    updateStatusIndicator();
+}
+NetSpeedIndicator::~NetSpeedIndicator()
+{
+
+}
+
+void NetSpeedIndicator::updateStatusIndicator()
+{
+#ifndef UNIT_TEST
+    if(m_isEnabled)
+    {
+        QString rx = m_speedWrapper->getRxSpeedStr();
+        QString tx = m_speedWrapper->getTxSpeedStr();
+        QString percent =
+                QString::fromLocal8Bit("↓")
+                + rx
+                + "/"
+                + QString::fromLocal8Bit("↑")
+                + tx;
+        setValue(percent);
+    }
+#endif
+}
+
+void NetSpeedIndicator::gconf_enable_changed()
+{
+    m_isEnabled = m_enabled->value().toBool();
+    if(m_isEnabled)
+    {
+        if(m_when_online)
+        {
+            if(m_isOnline)
+                setStyleNameAndUpdate(QString(metaObject()->className()));
+            else
+                setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
+        }else{
+            setStyleNameAndUpdate(QString(metaObject()->className()));
+        }
+    }
+    else
+    {
+        setStyleNameAndUpdate(QString(metaObject()->className()) + "Disabled");
+    }
+}
+
+void NetSpeedIndicator::gconf_when_online_changed()
+{
+    m_when_online = m_gconf_when_online->value().toBool();
+    gconf_enable_changed();
+}
+
+void NetSpeedIndicator::onlineChanged(bool online)
+{
+    m_isOnline = online;
+    gconf_enable_changed();
+}

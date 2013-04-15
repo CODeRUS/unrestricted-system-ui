@@ -118,4 +118,8 @@ class DLNAStatusIndicatorModel : public StatusIndicatorModel
     M_MODEL(DLNAStatusIndicatorModel)
 };
 
+class NetSpeedIndicatorModel : public StatusIndicatorModel
+{
+    M_MODEL(NetSpeedIndicatorModel)
+};
 #endif /* STATUSINDICATORMODEL_H_ */
