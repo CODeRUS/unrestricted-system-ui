@@ -1036,7 +1036,8 @@ BatteryPercentageLine::BatteryPercentageLine(int maxWidth, ApplicationContext &c
 
     batteryPercentage = new ContextProperty("Battery.ChargePercentage", this);
     connect(batteryPercentage, SIGNAL(valueChanged()), this, SLOT(batteryLevelChanged()));
-    batteryLevelChanged();
+    
+    displayChanged();
 }
 
 BatteryPercentageLine::~BatteryPercentageLine()
@@ -1060,6 +1061,7 @@ void BatteryPercentageLine::displayChanged()
 {
     mEnabled = displayPercentageLine->value().toBool();
     batteryLevelChanged();
+    colorChanged();
 }
 
 void BatteryPercentageLine::colorChanged()
