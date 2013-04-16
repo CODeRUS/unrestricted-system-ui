@@ -25,6 +25,10 @@
 #include "statusindicatormodel.h"
 #include "speedwrapper.h"
 #include <QTimer>
+#include <QPixmap>
+#include <MImageWidget>
+#include <contextsubscriber/contextproperty.h>
+
 
 #ifdef HAVE_QMSYSTEM
 #include <qmdevicemode.h>
@@ -698,5 +702,31 @@ private:
     bool m_isOnline;
     bool m_when_online;
 };
+
+#ifndef UNIT_TEST
+class BatteryPercentageLine : public MImageWidget
+{
+    Q_OBJECT
+
+public:
+    explicit BatteryPercentageLine(int maxWidth, ApplicationContext &context, QGraphicsItem *parent);
+    virtual ~BatteryPercentageLine();
+
+private slots:
+    void batteryLevelChanged();
+    void displayChanged();
+    void colorChanged();
+
+private:
+    QPixmap mColorPoint;
+    ContextProperty *batteryPercentage;
+    MGConfItem *displayPercentageLine;
+    MGConfItem *redPercentageLine;
+    MGConfItem *greenPercentageLine;
+    MGConfItem *bluePercentageLine;
+    int mMaxWidth;
+    bool mEnabled;
+};
+#endif
 
 #endif // STATUSINDICATOR_H

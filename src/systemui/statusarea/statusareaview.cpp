@@ -119,6 +119,11 @@ StatusAreaView::StatusAreaView(StatusArea *controller) :
 
     // Set up the class for functional testing
     setupTestability();
+
+#ifndef UNIT_TEST
+    landscapeBatteryLine = new BatteryPercentageLine(MDeviceProfile::instance()->resolution().width(), contextFrameworkContext, landscapeWidget);
+    portraitBatteryLine = new BatteryPercentageLine(MDeviceProfile::instance()->resolution().height(), contextFrameworkContext, portraitWidget);
+#endif
 }
 
 void StatusAreaView::setupTestability()

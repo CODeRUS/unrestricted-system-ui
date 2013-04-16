@@ -31,6 +31,9 @@ class StatusArea;
 class StatusIndicator;
 class InputMethodStatusIndicator;
 class QGraphicsLinearLayout;
+#ifndef UNIT_TEST
+class BatteryPercentageLine;
+#endif
 
 /*!
  * Status area view draws the status area.
@@ -150,6 +153,11 @@ private:
     //! Test
     StatusIndicator *landscapeNetSpeedIndicator;
     StatusIndicator *portraitNetSpeedIndicator;
+
+#ifndef UNIT_TEST
+    BatteryPercentageLine *landscapeBatteryLine;
+    BatteryPercentageLine *portraitBatteryLine;
+#endif
 
     //! Call state context framework key
     ContextItem *callContextItem;
