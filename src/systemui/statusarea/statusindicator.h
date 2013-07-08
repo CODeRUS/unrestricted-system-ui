@@ -721,9 +721,17 @@ private:
     QPixmap mColorPoint;
     ContextProperty *batteryPercentage;
     MGConfItem *displayPercentageLine;
+    MGConfItem *percentageLineL1;
+    MGConfItem *percentageLineL2;
     MGConfItem *redPercentageLine;
     MGConfItem *greenPercentageLine;
     MGConfItem *bluePercentageLine;
+    MGConfItem *redPercentageLine2;
+    MGConfItem *greenPercentageLine2;
+    MGConfItem *bluePercentageLine2;
+    MGConfItem *redPercentageLine3;
+    MGConfItem *greenPercentageLine3;
+    MGConfItem *bluePercentageLine3;
     int mMaxWidth;
     bool mEnabled;
 };

@@ -1011,13 +1011,21 @@ BatteryPercentageLine::BatteryPercentageLine(int maxWidth, ApplicationContext &c
 {
     setAspectRatioMode(Qt::IgnoreAspectRatio);
     mColorPoint = QPixmap(1, 1);
-    mColorPoint.fill(QColor(60, 200, 255));
-    setPixmap(mColorPoint);
 
     displayPercentageLine = new MGConfItem("/desktop/meego/status_area/display_percentage_line", this);
     if (displayPercentageLine->value().isNull())
         displayPercentageLine->set(true);
     connect(displayPercentageLine, SIGNAL(valueChanged()), this, SLOT(displayChanged()));
+
+    percentageLineL1 = new MGConfItem("/desktop/meego/status_area/percentage_line_level_1", this);
+    if (percentageLineL1->value().isNull())
+        percentageLineL1->set(60);
+    connect(percentageLineL1, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    percentageLineL2 = new MGConfItem("/desktop/meego/status_area/percentage_line_level_2", this);
+    if (percentageLineL2->value().isNull())
+        percentageLineL2->set(30);
+    connect(percentageLineL2, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
 
     redPercentageLine = new MGConfItem("/desktop/meego/status_area/red_percentage_line", this);
     if (redPercentageLine->value().isNull())
@@ -1034,6 +1042,36 @@ BatteryPercentageLine::BatteryPercentageLine(int maxWidth, ApplicationContext &c
         bluePercentageLine->set(255);
     connect(bluePercentageLine, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
 
+    redPercentageLine2 = new MGConfItem("/desktop/meego/status_area/red_percentage_line_2", this);
+    if (redPercentageLine2->value().isNull())
+        redPercentageLine2->set(120);
+    connect(redPercentageLine2, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    greenPercentageLine2 = new MGConfItem("/desktop/meego/status_area/green_percentage_line_2", this);
+    if (greenPercentageLine2->value().isNull())
+        greenPercentageLine2->set(200);
+    connect(greenPercentageLine2, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    bluePercentageLine2 = new MGConfItem("/desktop/meego/status_area/blue_percentage_line_2", this);
+    if (bluePercentageLine2->value().isNull())
+        bluePercentageLine2->set(255);
+    connect(bluePercentageLine2, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    redPercentageLine3 = new MGConfItem("/desktop/meego/status_area/red_percentage_line_3", this);
+    if (redPercentageLine3->value().isNull())
+        redPercentageLine3->set(255);
+    connect(redPercentageLine3, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    greenPercentageLine3 = new MGConfItem("/desktop/meego/status_area/green_percentage_line_3", this);
+    if (greenPercentageLine3->value().isNull())
+        greenPercentageLine3->set(40);
+    connect(greenPercentageLine3, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
+    bluePercentageLine3 = new MGConfItem("/desktop/meego/status_area/blue_percentage_line_3", this);
+    if (bluePercentageLine3->value().isNull())
+        bluePercentageLine3->set(40);
+    connect(bluePercentageLine3, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+
     batteryPercentage = new ContextProperty("Battery.ChargePercentage", this);
     connect(batteryPercentage, SIGNAL(valueChanged()), this, SLOT(batteryLevelChanged()));
     
@@ -1043,32 +1081,50 @@ BatteryPercentageLine::BatteryPercentageLine(int maxWidth, ApplicationContext &c
 BatteryPercentageLine::~BatteryPercentageLine()
 {
     disconnect(batteryPercentage, SIGNAL(valueChanged()), this, SLOT(batteryLevelChanged()));
+    disconnect(displayPercentageLine, SIGNAL(valueChanged()), this, SLOT(displayChanged()));
+    disconnect(redPercentageLine, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+    disconnect(greenPercentageLine, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
+    disconnect(bluePercentageLine, SIGNAL(valueChanged()), this, SLOT(colorChanged()));
 }
 
 void BatteryPercentageLine::batteryLevelChanged()
 {
     if (mEnabled) {
-        int percentage = batteryPercentage->value().toString().toInt();
+        int percentage = batteryPercentage->value().toInt();
         int width = mMaxWidth * percentage / 100;
         setGeometry(QRectF(0, 0, width, 1));
     }
     else {
         setGeometry(QRectF(0,0,0,0));
     }
+    colorChanged();
 }
 
 void BatteryPercentageLine::displayChanged()
 {
     mEnabled = displayPercentageLine->value().toBool();
-    batteryLevelChanged();
     colorChanged();
+    batteryLevelChanged();
 }
 
 void BatteryPercentageLine::colorChanged()
 {
+    int percentage = batteryPercentage->value().toInt();
+    int l1 = percentageLineL1->value().toInt();
+    int l2 = percentageLineL2->value().toInt();
     int red = redPercentageLine->value().toInt();
     int green = greenPercentageLine->value().toInt();
     int blue = bluePercentageLine->value().toInt();
+    if (percentage < l2) {
+        red = redPercentageLine3->value().toInt();
+        green = greenPercentageLine3->value().toInt();
+        blue = bluePercentageLine3->value().toInt();
+    }
+    else if (percentage < l1) {
+        red = redPercentageLine2->value().toInt();
+        green = greenPercentageLine2->value().toInt();
+        blue = bluePercentageLine2->value().toInt();
+    }
     mColorPoint.fill(QColor(red, green, blue));
     setPixmap(mColorPoint);
 }
