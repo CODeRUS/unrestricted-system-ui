@@ -96,6 +96,16 @@ bool LEDNotificationSink::checkIfAcceptable(const NotificationParameters &parame
         if (allowedNotifications.contains("organiser"))
             return true;
     }
+    // Wazapp events
+    else if (genericTextCatalogue.compare("wazapp") == 0) {
+        if (allowedNotifications.contains("wazapp"))
+            return true;    
+    }
+    // Rocket events
+    else if (genericTextCatalogue.compare("rocket") == 0) {
+        if (allowedNotifications.contains("rocket"))
+            return true;    
+    }
 
     return false;
 }
