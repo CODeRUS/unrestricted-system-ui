@@ -1,21 +1,6 @@
 #!/bin/sh
 
-chown -R user:users /home/user/.status-menu/
-
-if [ ! -d /home/user/.status-menu ]; then
-  aegis-exec -l -u user "mkdir -p /home/user/.status-menu"
-fi
-if [ ! -f /home/user/.status-menu/items-order.conf ]; then
-  aegis-exec -l -u user "cp -v /etc/status-menu/items-order.conf /home/user/.status-menu/"
-fi
-if [ ! -f /home/user/.status-menu/top-order.conf ]; then
-  aegis-exec -l -u user "cp -v /etc/status-menu/top-order.conf /home/user/.status-menu/"
-fi
-if [ ! -f /home/user/.status-menu/pannable-order.conf ]; then
-  aegis-exec -l -u user "cp -v /etc/status-menu/pannable-order.conf /home/user/.status-menu/"
-fi
-
-chown -R user:users /home/user/.status-menu/
+/usr/share/sysuid/setup.sh
 
 if [ -n "`initctl status xsession/sysuid | grep running`" ]
 then

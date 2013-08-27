@@ -37,6 +37,7 @@ class StatusIndicatorMenu;
 class StatusIndicatorMenuWindow : public MWindow
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.nokia.unrestricted")
 
 public:
     /*!
@@ -72,6 +73,14 @@ signals:
      */
     void visibilityChanged(bool visible);
 
+public slots:
+    /*! Resets menu widget.
+     *
+     * Dismisses window from scene manager, if window is appeared there.
+     * Creates a new menu widget and appears window to scene manager.
+     */
+    Q_SCRIPTABLE void resetMenuWidget();
+
 private slots:
 
     //! Hides window and sends visibilityChanged signal
@@ -96,13 +105,6 @@ private slots:
 #endif
 
 private:
-    /*! Resets menu widget.
-     *
-     * Dismisses window from scene manager, if window is appeared there.
-     * Creates a new menu widget and appears window to scene manager.
-     */
-    void resetMenuWidget();
-
     //! Status bar
     MStatusBar *statusBar;
 

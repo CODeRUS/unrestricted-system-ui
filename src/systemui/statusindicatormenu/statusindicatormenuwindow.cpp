@@ -24,11 +24,20 @@
 #include "statusindicatormenuwindow.h"
 #include "statusindicatormenu.h"
 
+#include <QDBusConnection>
+
+#define OBJECT_NAME "/menuwindow"
+#define SERVICE_NAME "com.nokia.unrestricted"
+
 StatusIndicatorMenuWindow::StatusIndicatorMenuWindow(QWidget *parent) :
     MWindow(parent),
     statusBar(new MStatusBar),
     menuWidget(NULL)
 {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerService(SERVICE_NAME);
+    bus.registerObject(OBJECT_NAME, this, QDBusConnection::ExportScriptableSlots);
+
     // Show status bar
     setSceneManager(new MSceneManager);
     sceneManager()->appearSceneWindowNow(statusBar);
@@ -69,7 +78,8 @@ StatusIndicatorMenuWindow::~StatusIndicatorMenuWindow()
 
 void StatusIndicatorMenuWindow::resetMenuWidget()
 {
-    delete menuWidget;
+    if (menuWidget)
+        delete menuWidget;
 
     menuWidget = new StatusIndicatorMenu();
     connect(menuWidget, SIGNAL(showRequested()), this, SLOT(makeVisible()));

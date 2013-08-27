@@ -17,6 +17,19 @@
     
     <for path="/usr/bin/sysuid" />
   </request>
+  <request>
+    <credential name="UID::user" />
+    <credential name="GID::users" />
+    <credential name="GRP::users" />
+    <credential name="CAP::chown"/>
+    <for path="/usr/share/sysuid/setup.sh" />
+  </request>
+  <request>
+    <credential name="UID::root" />
+    <credential name="GID::root" />
+    <credential name="GRP::root" />
+    <for path="/usr/share/sysuid/root_helper.sh" />
+  </request>
   <request context="INSTALL">
     <credential name="CAP::chown"/>
   </request>

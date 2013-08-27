@@ -41,7 +41,6 @@ StatusIndicatorMenuVerticalView::StatusIndicatorMenuVerticalView(StatusIndicator
     connect(extensionArea, SIGNAL(extensionInstantiated(MApplicationExtensionInterface*)), this, SLOT(setExtensionLayoutPosition(MApplicationExtensionInterface*)));
     extensionArea->setObjectName("StatusIndicatorMenuExtensionArea");
     setSafeMode(extensionArea, QFile(CRASH_FILE).exists());
-    extensionArea->setOrder(getOrderList());
     extensionArea->init();
 
     // Add panning to the expension area
@@ -112,81 +111,41 @@ StatusIndicatorMenuVerticalView::~StatusIndicatorMenuVerticalView()
 
 void StatusIndicatorMenuVerticalView::setSafeMode(MApplicationExtensionArea *extensionArea, bool enabled)
 {
-    QRegExp inProcessFilterRegExp;
-    QRegExp outOfProcessFilterRegExp;
+    QStringList order;
+    QRegExp filter;
 
-    if (enabled) {
-        inProcessFilterRegExp = QRegExp("/statusindicatormenu-(volume|call|internetconnection|safemode|bluetooth|dlna|presence|transfer).desktop$");
-        outOfProcessFilterRegExp = QRegExp("$^");
-    } else {
-        QString string = "/statusindicatormenu-(" + pluginNameString() + ").desktop$";
-        inProcessFilterRegExp = QRegExp(string);
-        outOfProcessFilterRegExp = QRegExp();
-    }
-
-    extensionArea->setInProcessFilter(inProcessFilterRegExp);
-    extensionArea->setOutOfProcessFilter(outOfProcessFilterRegExp);
-}
-
-QString StatusIndicatorMenuVerticalView::pluginNameString()
-{
-    // Hacky, but oh well
-    QDir dir = QDir(EXTENSIONS_DIR);
-    // Panic?
-    if (!dir.exists()) {
-        return "volume|call|internetconnection|bluetooth|dlna|presence|transfer";
-    } else {
-        QStringList filters;
-        filters << "statusindicatormenu*.desktop";
-        QStringList fileNames = dir.entryList(filters);
-        QStringList modifiedFileNameList;
-        foreach (QString string, fileNames) {
-            string.remove("statusindicatormenu-");
-            string.remove(".desktop");
-            if (!string.contains("safemode"))
-                modifiedFileNameList.append(string);
-        }
-        fileNames.clear();
-
-        return modifiedFileNameList.join("|");
-    }
-}
-
-QStringList StatusIndicatorMenuVerticalView::getOrderList()
-{
     QFile configFile("/home/user/.status-menu/items-order.conf");
-    if (!configFile.exists()) {
-        QStringList list;
-        list << "statusindicatormenu-volume.desktop"
-             << "statusindicatormenu-call.desktop"
-             << "statusindicatormenu-internetconnection.desktop"
-             << "statusindicatormenu-bluetooth.desktop"
-             << "statusindicatormenu-dlna.desktop"
-             << "statusindicatormenu-presence.desktop"
-             << "statusindicatormenu-transfer.desktop";
-        return list;
-    };
 
-    configFile.open(QIODevice::ReadOnly);
-    QString orderListString = configFile.readAll();
-    configFile.close();
-    QStringList orderList = orderListString.split("\n");
+    if (enabled || !configFile.exists()) {
+        filter.setPattern("/statusindicatormenu-(volume|call|internetconnection|bluetooth|dlna|presence|transfer).desktop$");
+        order << "statusindicatormenu-volume.desktop"
+              << "statusindicatormenu-call.desktop"
+              << "statusindicatormenu-internetconnection.desktop"
+              << "statusindicatormenu-bluetooth.desktop"
+              << "statusindicatormenu-dlna.desktop"
+              << "statusindicatormenu-presence.desktop"
+              << "statusindicatormenu-transfer.desktop";
+    } else if (configFile.exists()) {
+        if (configFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            order = QString(configFile.readAll()).split("\n");
+            configFile.close();
 
-    QDir pluginDir(EXTENSIONS_DIR);
-    // It should, but do it the right way anyway...
-    if (pluginDir.exists()) {
-        QStringList filters;
-        filters << "statusindicatormenu*.desktop";
-        QStringList pluginNames = pluginDir.entryList(filters);
-        foreach (QString plugin, orderList) {
-            if (pluginNames.contains(plugin))
-                pluginNames.removeAll(plugin);
+            QStringList pattern;
+            foreach (QString string, order)
+                if (string.length() > 0
+                 && string.contains("statusindicatormenu-")
+                 && !string.contains("safemode"))
+                    pattern.append(string.remove("statusindicatormenu-").remove(".desktop"));
+
+            filter.setPattern(QString("/statusindicatormenu-(%1).desktop$").arg(pattern.join("|")));
+            pattern.clear();
         }
-
-        orderList.append(pluginNames);
     }
 
-    return orderList;
+    extensionArea->setInProcessFilter(filter);
+    extensionArea->setOutOfProcessFilter(QRegExp("$^"));
+    extensionArea->setOrder(order);
 }
 
 M_REGISTER_VIEW_NEW(StatusIndicatorMenuVerticalView, StatusIndicatorMenu)

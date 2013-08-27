@@ -1,7 +1,8 @@
 Source: system-ui
 Section: devel
 Priority: optional
-Maintainer: Vesa Halttunen <vesa.halttunen@nokia.com>
+Maintainer: coderus <coderusinbox@gmail.com>
+XSBC-Original-Maintainer: Vesa Halttunen <vesa.halttunen@nokia.com>
 Build-Depends: debhelper (>= 5), doxygen (>=1.5.9), libmeegotouch-dev (>= 0.22.12-1+0m6),
                libqmsystem2-dev (>= 1.2.0), libresourceqt-dev, libcontextsubscriber-dev,
                libngf-dev, libxcomposite-dev, libxfixes-dev, libxext-dev,
@@ -11,7 +12,7 @@ Build-Depends: debhelper (>= 5), doxygen (>=1.5.9), libmeegotouch-dev (>= 0.22.1
 Standards-Version: 3.8.0
 
 Package: system-ui
-Provides: duistatusindicatormenu, unrestricted-system-ui, system-ui-led-support
+Provides: duistatusindicatormenu, unrestricted-system-ui, system-ui-led-support, unrestricted-settings-support
 Conflicts: duistatusindicatormenu
 Replaces: duistatusindicatormenu, cellular-ui
 Architecture: any

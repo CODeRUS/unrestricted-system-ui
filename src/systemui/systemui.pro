@@ -98,6 +98,17 @@ headers.files += \
     volumeextensioninterface.h \
     VolumeExtensionInterface
 
+config.files += data/items-order.conf \
+                data/pannable-order.conf \
+                data/top-order.conf
+config.path = /usr/share/sysuid
+
+scripts.files += scripts/setup.sh \
+                 scripts/root_helper.sh
+scripts.path = /usr/share/sysuid
+
 INSTALLS += target \
             dbus_policy \
-            headers
+            headers \
+            config \
+            scripts

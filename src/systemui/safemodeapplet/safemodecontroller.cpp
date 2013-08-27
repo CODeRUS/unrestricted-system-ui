@@ -1,6 +1,8 @@
 #include "safemodecontroller.h"
 #include "safemodeplugin.h"
 #include "../statusindicatormenu/statusindicatormenuverticalview.h"
+#include <QDBusInterface>
+#include <QDBusConnection>
 
 SafeModeController::SafeModeController(SafeModePlugin *safeModePlugin, QGraphicsItem *parent) :
     CustomListItem(parent)
@@ -27,8 +29,10 @@ void SafeModeController::onItemClicked()
         if (file.exists())
             file.remove();
 
-        // Ugly, but don't know any other way :/
-        system("killall sysuid");
+        QDBusInterface *unrestricted = new QDBusInterface("com.nokia.unrestricted", "/menuwindow", "com.nokia.unrestricted",
+                                                          QDBusConnection::sessionBus(), this);
+        unrestricted->call("resetMenuWidget");
+        delete unrestricted;
     } else if (result == QMessageBox::Help) {
         QDesktopServices::openUrl(QUrl("http://mohammadag.xceleo.org/system-ui-safe-mode-help.html"));
     }
