@@ -106,6 +106,10 @@ bool LEDNotificationSink::checkIfAcceptable(const NotificationParameters &parame
         if (allowedNotifications.contains("rocket"))
             return true;    
     }
+    // Any other events with genericTextCatalogue listed in allowed
+    else if (allowedNotifications.contains(genericTextCatalogue)) {
+        return true;
+    }
 
     return false;
 }
